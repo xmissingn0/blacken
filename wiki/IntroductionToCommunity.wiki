@@ -104,3 +104,7 @@ This should allow for real support for nearly all of the Unicode codepoints -- i
 B. Support for line-drawing (maybe an SVG subset) graphical substitutions.
 
 The ultimate goal here is to turn the traditional ASCII/Unicode map in to something resembling a real map. Buildings should look like blueprints using the same visual shortcuts. This would mean that we know which direction doors open.
+
+----
+
+Update 2012-03-26: Blacken has moved to the Apache 2.0 license.
