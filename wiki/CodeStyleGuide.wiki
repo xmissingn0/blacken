@@ -1,6 +1,5 @@
+#summary The code style guide of Blacken.
 #labels Phase-Implementation
-
-#summary Describe the code style guide of Blacken.
 
 = Introduction =
 
