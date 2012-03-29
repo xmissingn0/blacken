@@ -1,0 +1,87 @@
+#summary Describe the code style guide of Blacken.
+#labels Phase-Implementation
+
+= Introduction =
+
+Any time there are multiple people contributing to a project there is a need for a common coding style.
+
+Most of Blacken is written in Java, so that is currently the only language for which we have a style. If we leveraged XML or Groovy we would want to extend the style guide to those languages as well.
+
+At some point we may also have a documentation style guide.
+
+= Java Style =
+
+== English description of style ==
+
+In general we follow Java standards for coding style. 
+
+The idea being that if you're going to write in Java, you do this professionally as well (because few people would want to write in Java for fun). As such, we need to conform to standard Java coding style so that we don't get in to any bad habits.
+
+=== TAB characters and indentation ===
+
+Viewing code shouldn't require any special tools or special tool preparation. This means we need to accept the fact that the _TAB character has a fixed size: 8 spaces._
+
+There are three ways to store indentation in files:
+
+# "hard" tabs - these are literal `TAB` characters
+# "soft" tabs - these are exclusively `Space` characters.
+# "mixed" tabs - these use combination of `TAB` and `Space` characters.
+
+With the rise of Python, I think mixed tabs are effectively dead. (Python explicitly does not work with mixed tabs.) I'm not even sure if they're a listed option in modern editors. They work by accepting the fact that the TAB is a fixed size, and making up the difference between TAB and the indent size with spaces.
+
+For Blacken, _we want four space "soft" tabs._
+
+=== One line conditionals ===
+
+One line conditional statements should have braces.
+
+Like so:
+
+{{{
+if (var == 1) {
+    var=2;
+}
+}}}
+
+=== Line length ===
+
+There's a _strong preference for 80 column lines_. It can be broken when it makes sense to do so, (so it accounts for editor line wrapping which is moderately broken as in Eclipse), but in general 80 columns is preferred.
+
+_When it comes to documentation 80 columns is a firm rule._ There's no reason not to wrap JavaDoc and other comments at 80 columns.
+
+The reasoning: We're emulating a Terminal window with the Blacken user-interface. People prone to Roguelike games with ASCII/Unicode graphics are likely to be people comfortable on the command-line. While you may be able to have hundreds of columns in that fancy GUI editor, you have to accept that another developer may have his massive screen filled with a dozen 80x25 windows each dedicated to a different task.
+
+=== JavaDoc ===
+
+All public functions and classes should have JavaDocs.
+
+JavaDocs should wrap at 80 columns.
+
+The first line of a JavaDoc should give a brief description of the function/class -- enough that if the rest is truncated (due to being shown in a Tooltip) it is clear why this function/class is different from another.
+
+JavaDoc text should be meaningful. Repeating the name of the function, class, or parameter is useless in and of itself. If you have nothing to add which is not self-described in the name consider leaving it blank.
+
+The primary documentation language of Blacken is English. Patches to Blacken must both have a JavaDoc and that JavaDoc must be in English.
+
+== Described by way of astyle ==
+
+Astyle <http://astyle.sourceforge.net/astyle.html> is a simple code reformatter.
+
+Compared to GNU indent it has a lot fewer options, but it does this by generally being sane instead of needing to be configured to be sane.
+
+This may be extended later, but right now we're going with:
+
+{{{
+astyle --mode=java --style=java --add-brackets --convert-tabs
+}}}
+
+Broken down, this means:
+
+* `--mode=java` : We're formatting Java code
+* `--style=java` : Start with standard Java style
+* `--add-brackets` : One-line conditional statements should always have brackets
+* `--convert-tabs`: Convert hard TAB characters in to spaces
+
+Not mentioned is the indentation size -- the default in `astyle` is four.
+
+This does no formatting of comments at all -- which is useful considering how frequently that goes wrong. Comment formatting can then be done by hand.
