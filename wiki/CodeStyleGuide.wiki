@@ -1,5 +1,6 @@
-#summary Describe the code style guide of Blacken.
 #labels Phase-Implementation
+
+#summary Describe the code style guide of Blacken.
 
 = Introduction =
 
@@ -23,9 +24,9 @@ Viewing code shouldn't require any special tools or special tool preparation. Th
 
 There are three ways to store indentation in files:
 
-# "hard" tabs - these are literal `TAB` characters
-# "soft" tabs - these are exclusively `Space` characters.
-# "mixed" tabs - these use combination of `TAB` and `Space` characters.
+  # "hard" tabs - these are literal `TAB` characters
+  # "soft" tabs - these are exclusively `Space` characters.
+  # "mixed" tabs - these use combination of `TAB` and `Space` characters.
 
 With the rise of Python, I think mixed tabs are effectively dead. (Python explicitly does not work with mixed tabs.) I'm not even sure if they're a listed option in modern editors. They work by accepting the fact that the TAB is a fixed size, and making up the difference between TAB and the indent size with spaces.
 
@@ -77,13 +78,10 @@ astyle --mode=java --style=java --add-brackets --convert-tabs
 
 Broken down, this means:
 
-* `--mode=java` : We're formatting Java code
-
-* `--style=java` : Start with standard Java style
-
-* `--add-brackets` : One-line conditional statements should always have brackets
-
-* `--convert-tabs`: Convert hard TAB characters in to spaces
+  * `--mode=java` : We're formatting Java code
+  * `--style=java` : Start with standard Java style
+  * `--add-brackets` : One-line conditional statements should always have brackets
+  * `--convert-tabs`: Convert hard TAB characters in to spaces
 
 Not mentioned is the indentation size -- the default in `astyle` is four.
 
