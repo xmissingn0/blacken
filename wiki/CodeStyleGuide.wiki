@@ -78,8 +78,11 @@ astyle --mode=java --style=java --add-brackets --convert-tabs
 Broken down, this means:
 
 * `--mode=java` : We're formatting Java code
+
 * `--style=java` : Start with standard Java style
+
 * `--add-brackets` : One-line conditional statements should always have brackets
+
 * `--convert-tabs`: Convert hard TAB characters in to spaces
 
 Not mentioned is the indentation size -- the default in `astyle` is four.
