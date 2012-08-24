@@ -5,6 +5,7 @@
     href="launch-boarder.jnlp">
   <information>
     <title>boarder</title>
+    <vendor>Blacken Roguelike Library Developers</vendor>
     <homepage href="http://blacken.googlecode.com"/>
     <description>A user-interface to test the keyboard and keyboard codes.</description>
     <offline-allowed/>
