@@ -5,8 +5,8 @@
     <artifactId>examples</artifactId>
     <packaging>pom</packaging>
     <scm>
-      <connection>scm:svn:http://blacken.googlecode.com/svn/trunk/examples</connection>
-      <developerConnection>scm:svn:https://blacken.googlecode.com/svn/trunk/examples</developerConnection>
+      <connection>scm:svn:http://blacken.googlecode.com/svn/blacken-examples/trunk</connection>
+      <developerConnection>scm:svn:https://blacken.googlecode.com/svn/blacken-examples/trunk</developerConnection>
       <url>https://code.google.com/p/blacken/source/browse/</url>
     </scm>
 
@@ -35,7 +35,7 @@
           <artifactId>maven-release-plugin</artifactId>
           <version>2.3.2</version>
           <configuration>
-            <tagBase>https://blacken.googlecode.com/svn/tags</tagBase>
+             <tagBase>https://blacken.googlecode.com/svn/blacken-examples/branches</tagBase>
           </configuration>
         </plugin>
     </plugins>
