@@ -18,10 +18,12 @@ package com.googlecode.blacken.examples;
 import com.googlecode.blacken.colors.ColorNames;
 import com.googlecode.blacken.colors.ColorPalette;
 import com.googlecode.blacken.swing.SwingTerminal;
+import com.googlecode.blacken.terminal.BlackenEventType;
 import com.googlecode.blacken.terminal.BlackenKeys;
 import com.googlecode.blacken.terminal.BlackenModifier;
 import com.googlecode.blacken.terminal.CursesLikeAPI;
 import com.googlecode.blacken.terminal.TerminalInterface;
+import java.util.EnumSet;
 
 /**
  * Generic SwingTerminal test.
@@ -112,7 +114,7 @@ public class Swinger {
     
     public boolean loop() {
         int ch = BlackenKeys.NO_KEY;
-        term.enableEventNotices(null);
+        term.setEventNotices(EnumSet.allOf(BlackenEventType.class));
         term.puts("Terminal Interface\n");
         term.puts("Press F10 to quit.\n");
         term.puts(">");
