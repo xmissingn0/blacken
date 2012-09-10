@@ -15,74 +15,132 @@
 */
 package com.googlecode.blacken.examples;
 
+import com.googlecode.blacken.colors.ColorNames;
+import com.googlecode.blacken.colors.ColorPalette;
+import com.googlecode.blacken.swing.SwingTerminal;
 import com.googlecode.blacken.terminal.BlackenKeys;
 import com.googlecode.blacken.terminal.BlackenModifier;
+import com.googlecode.blacken.terminal.CursesLikeAPI;
+import com.googlecode.blacken.terminal.TerminalInterface;
 
 /**
  * Generic SwingTerminal test.
  * 
- * @author yam655
+ * @author Steven Black
  */
-public class Swinger extends AbstractExample {
-    
+public class Swinger {
+    /**
+     * TerminalInterface used by the example
+     */
+    protected CursesLikeAPI term;
+    /**
+     * ColorPalette used by the example
+     */
+    protected ColorPalette palette;
+    /**
+     * Whether to quit the loop or not
+     */
+    protected boolean quit;
+
     Swinger() {
         // do nothing
     }
 
     /**
+     * Tell the loop to quit.
+     *
+     * @param quit new quit status
+     */
+    public void setQuit(boolean quit) {
+        this.quit = quit;
+    }
+    /**
+     * Get the quit status.
+     *
+     * @return whether we should quit
+     */
+    public boolean getQuit() {
+        return quit;
+    }
+
+    /**
+     * Initialize the example
+     *
+     * @param term alternate TerminalInterface to use
+     * @param palette alternate ColorPalette to use
+     */
+    public void init(TerminalInterface term, ColorPalette palette) {
+        if (term == null) {
+            term = new SwingTerminal();
+            term.init("Example Program", 25, 80);
+        }
+        this.term = new CursesLikeAPI(term);
+        if (palette == null) {
+            palette = new ColorPalette();
+            palette.addAll(ColorNames.XTERM_256_COLORS, false);
+            palette.putMapping(ColorNames.SVG_COLORS);
+        }
+        this.palette = palette;
+        this.term.setPalette(palette);
+    }
+    /**
+     * Quit the application.
+     *
+     * <p>This calls quit on the underlying TerminalInterface.</p>
+     */
+    public void quit() {
+        term.quit();
+    }
+
+    /**
+     * @param args command-line arguments
+     * @param that example instance
+     */
+    public static void main(String[] args) {
+        Swinger that = new Swinger();
+        that.init(null, null);
+        that.loop();
+        that.quit();
+    }
+
+    /**
      * Show the help message
      */
-    @Override
     public void help() {
         // XXX do this
     }
     
-    /*
-     * (non-Javadoc)
-     * @see com.googlecode.blacken.examples.AbstractExample#loop()
-     */
-    @Override
     public boolean loop() {
         int ch = BlackenKeys.NO_KEY;
         term.enableEventNotices(null);
-        term.puts("Terminal Interface\n"); //$NON-NLS-1$
-        term.puts("Press F10 to quit.\n"); //$NON-NLS-1$
-        term.puts(">"); //$NON-NLS-1$
+        term.puts("Terminal Interface\n");
+        term.puts("Press F10 to quit.\n");
+        term.puts(">");
         while (ch != BlackenKeys.KEY_F10) {
             ch = term.getch();
-            
-            if (BlackenKeys.isModifier(ch)) {
+            if (ch == BlackenKeys.MOUSE_EVENT) {
+                term.puts("\n");
+                term.puts(term.getmouse().toString());
+                term.puts("\n>");
+            } else if (ch == BlackenKeys.WINDOW_EVENT) {
+                term.puts("\n");
+                term.puts(term.getwindow().toString());
+                term.puts("\n>");
+            } else if (BlackenKeys.isModifier(ch)) {
                 term.puts(BlackenModifier.getModifierString(ch).toString());
             } else if (BlackenKeys.isKeyCode(ch)) {
                 term.puts(BlackenKeys.getKeyName(ch));
                 if (ch == BlackenKeys.RESIZE_EVENT) {
-                    term.puts("\nYummy window resize!"); //$NON-NLS-1$
+                    term.puts("\nYummy window resize!");
                 }
-                if (ch == BlackenKeys.MOUSE_EVENT) {
-                    term.puts("\n"); //$NON-NLS-1$
-                    term.puts(term.getmouse().toString());
-                }
-                if (ch == BlackenKeys.WINDOW_EVENT) {
-                    term.puts("\n"); //$NON-NLS-1$
-                    term.puts(term.getwindow().toString());
-                }
-                term.puts("\n>"); //$NON-NLS-1$
+                term.puts("\n>");
                 
             } else {
                 term.puts(BlackenKeys.toString(ch));
-                term.puts("\n>"); //$NON-NLS-1$
+                term.puts("\n>");
             }
         }
         return this.quit;
     }
     
-    /**
-     * Start the example.
-     * 
-     * @param args command-line arguments
-     */
-    public static void main(String[] args) {
-        AbstractExample.main(args, new Swinger());
-    }
-
 }
