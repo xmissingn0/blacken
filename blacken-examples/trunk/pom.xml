@@ -2,7 +2,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.googlecode.blacken.examples</groupId>
-    <artifactId>examples</artifactId>
+    <artifactId>blacken-examples</artifactId>
     <packaging>pom</packaging>
     <scm>
       <connection>scm:svn:http://blacken.googlecode.com/svn/blacken-examples/trunk</connection>
@@ -35,7 +35,10 @@
           <artifactId>maven-release-plugin</artifactId>
           <version>2.3.2</version>
           <configuration>
-             <tagBase>https://blacken.googlecode.com/svn/blacken-examples/branches</tagBase>
+	     <autoVersionSubmodules>true</autoVersionSubmodules>
+	     <commitByProject>true</commitByProject>
+	     <remoteTagging>false</remoteTagging>
+	     <suppressCommitBeforeTag>true</suppressCommitBeforeTag>
           </configuration>
         </plugin>
     </plugins>
