@@ -5,12 +5,12 @@
     <artifactId>examples</artifactId>
     <packaging>pom</packaging>
     <scm>
-      <connection>scm:svn:http://blacken.googlecode.com/svn/blacken-examples/tags/blacken-examples-1.1</connection>
-      <developerConnection>scm:svn:https://blacken.googlecode.com/svn/blacken-examples/tags/blacken-examples-1.1</developerConnection>
-      <url>scm:svn:https://blacken.googlecode.com/svn/blacken-examples/branches/blacken-examples-1.1</url>
+      <connection>scm:svn:http://blacken.googlecode.com/svn/blacken-examples/trunk</connection>
+      <developerConnection>scm:svn:https://blacken.googlecode.com/svn/blacken-examples/trunk</developerConnection>
+      <url>https://code.google.com/p/blacken/source/browse/</url>
     </scm>
 
-    <version>1.1</version>
+    <version>1.1-SNAPSHOT</version>
 
     <name>Blacken Examples</name>
     <url>http://blacken.googlecode.com</url>
