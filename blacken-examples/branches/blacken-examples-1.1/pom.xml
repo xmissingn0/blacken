@@ -10,7 +10,7 @@
       <url>https://code.google.com/p/blacken/source/browse/branches/blacken-examples-1.1</url>
     </scm>
 
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
 
     <name>Blacken Examples</name>
     <url>http://blacken.googlecode.com</url>
