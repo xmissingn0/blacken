@@ -5,9 +5,9 @@
     <artifactId>blacken-examples</artifactId>
     <packaging>pom</packaging>
     <scm>
-      <connection>scm:svn:http://blacken.googlecode.com/svn/blacken-examples/trunk</connection>
-      <developerConnection>scm:svn:https://blacken.googlecode.com/svn/blacken-examples/trunk</developerConnection>
-      <url>https://code.google.com/p/blacken/source/browse/</url>
+      <connection>scm:svn:http://blacken.googlecode.com/svn/blacken-examples/branches/blacken-examples-1.1</connection>
+      <developerConnection>scm:svn:https://blacken.googlecode.com/svn/blacken-examples/branches/blacken-examples-1.1</developerConnection>
+      <url>https://code.google.com/p/blacken/source/browse/branches/blacken-examples-1.1</url>
     </scm>
 
     <version>1.1-SNAPSHOT</version>
