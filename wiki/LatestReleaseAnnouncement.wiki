@@ -1,6 +1,5 @@
 #summary Blacken 1.1 was officially announced on 2012-09-11
-
-DRAFT: NOT YET OFFICIAL
+#labels Featured
 
 = Introduction =
 
