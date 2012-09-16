@@ -21,6 +21,7 @@ import com.googlecode.blacken.colors.ColorPalette;
 import com.googlecode.blacken.colors.GimpPalette;
 import com.googlecode.blacken.core.ListMap;
 import com.googlecode.blacken.core.Obligations;
+import com.googlecode.blacken.exceptions.InvalidStringFormatException;
 import com.googlecode.blacken.swing.SwingTerminal;
 import com.googlecode.blacken.terminal.BlackenKeys;
 import com.googlecode.blacken.terminal.BlackenModifier;
@@ -160,6 +161,10 @@ public class Colors {
         int start_f = 0;
         int mode = 0;
         do {
+            Integer black = palette.get("Black");
+            if (black == null) {
+                black = palette.get("black");
+            }
             Integer normal = palette.get("Silver");
             if (normal == null) {
                 normal = palette.get("White");
@@ -167,10 +172,17 @@ public class Colors {
             if (normal == null) {
                 normal = palette.get("white");
             }
-            if (normal == null) {
-                normal = 7;
+            if (normal == null && black == null) {
+                normal = 0xffa0a0a0;
+                black = 0xff000000;
             }
-            term.setCurBackground(0);
+            if (black == null && normal != null) {
+                black = ColorHelper.makeVisible(normal);
+            }
+            if (normal == null && black != null) {
+                normal = ColorHelper.makeVisible(black);
+            }
+            term.setCurBackground(black);
             term.setCurForeground(normal);
             term.clear();
             term.move(0, 0);
@@ -249,7 +261,7 @@ public class Colors {
                 }
             }
             term.setCurForeground(normal);
-            term.setCurBackground(0);
+            term.setCurBackground(black);
             term.puts("Use arrow keys to browse grid; Q to quit; H for help.\n");
             term.puts("Use +/- to change mode.  Current mode:\n        ");
             switch(mode) {
@@ -545,6 +557,25 @@ public class Colors {
         }
         this.palettes.put("from GIMP Palette yam655-old-photo.gpl", p);
         this.nameMaps.put("from GIMP Palette yam655-old-photo.gpl", inverseMap(p));
+        p = new ColorPalette();
+        try {
+            p.putMappingResource(ColorHelper.class, "TraditionalJapaneseColors.txt");
+        } catch(IOException ex) {
+            p = null;
+        }
+        if (p != null) {
+            this.palettes.put("traditional Japanese colors", p);
+            this.nameMaps.put("traditional Japanese colors", inverseMap(p));
+        }
+        p = new ColorPalette();
+        try {
+            ColorHelper.createGradient(p, 25, ColorHelper.lookup(null, "#ff2", "#f00", "#700"));
+        } catch (InvalidStringFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        ColorHelper.extendGradient(p, 4, 0xFF444444);
+        this.palettes.put("a simple gradient", p);
+        this.nameMaps.put("a simple gradient", inverseMap(p));
     }
 
     public boolean loop() {
