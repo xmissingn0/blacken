@@ -102,6 +102,8 @@ public class Tutorial {
     private Set<Integer> roomWalls;
     private List<Map<Integer, Representation>> representations = new ArrayList<>();
     private int represent = 0;
+    private final int BASE_WIDTH = 80;
+    private final int BASE_HEIGHT = 25;
     private String helpMessage =
 "Tutorial Example Commands\n" +
 "============================================================================\n" +
@@ -639,7 +641,7 @@ public class Tutorial {
     public void init(TerminalInterface term, ColorPalette palette) {
         if (term == null) {
             term = new SwingTerminal();
-            term.init("Blacken Example: Swamp Orc Adventure", 25, 80);
+            term.init("Blacken Example: Swamp Orc Adventure", BASE_HEIGHT, BASE_WIDTH);
         }
         this.term = new CursesLikeAPI(term);
         if (palette == null) {
@@ -695,26 +697,38 @@ public class Tutorial {
         } catch (InvalidStringFormatException ex) {
             throw new RuntimeException(ex);
         }
+        Grid<Integer> image;
+        BlackenImageLoader imageLoader = term.getImageLoader();
+        try {
+            image = imageLoader.loadImage(this.getClass(), "Splash.txt");
+        } catch (ResourceMissingException ex) {
+            throw new RuntimeException(ex);
+        }
+        Grid<Integer> imageColors;
+        try {
+            imageColors = imageLoader.loadImage(this.getClass(), "SplashColor.txt");
+        } catch (ResourceMissingException ex) {
+            throw new RuntimeException(ex);
+        }
+        Grid<Integer> orcImage;
+        try {
+            orcImage = imageLoader.loadImage(this.getClass(), "orc_priest.bmp");
+        } catch (ResourceMissingException ex) {
+            throw new RuntimeException(ex);
+        }
         while (!ready) {
             term.clear(new TerminalCell(null, 0xFF000000, 0xFFaaaaaa));
-            SingleLine.applyTemplate(term, -1, -1, 0, 0, new TerminalCellTemplate(new WoodGrain(gradient)));
-            Grid<Integer> image;
-            try {
-                image = PlainImageLoader.loadPlainImage(this.getClass(), "Splash.txt");
-            } catch (ResourceMissingException ex) {
-                throw new RuntimeException(ex);
-            }
-            Grid<Integer> imageColors;
-            try {
-                imageColors = PlainImageLoader.loadPlainImage(this.getClass(), "SplashColor.txt");
-            } catch (ResourceMissingException ex) {
-                throw new RuntimeException(ex);
-            }
-            Images.imageToSequence(term, 0, 0, image, null);
-            Images.imageToBackground(term, 0, 0, imageColors, 0);
+            SingleLine.applyTemplate(term, -1, -1, 0, 0,
+                    new TerminalCellTemplate(new WoodGrain(gradient)));
+            Images.imageToSequence(term, 0,
+                    (term.getWidth() - imageColors.getWidth()) / 2, image, null);
+            Images.imageToBackground(term, 0,
+                    (term.getWidth() - imageColors.getWidth()) / 2, imageColors, 0);
+            Images.imageToBackground(term, imageColors.getHeight()-1,
+                    (orcImage.getWidth() / -4) + (term.getWidth() - BASE_WIDTH) / 2, orcImage, 0);
             // centerOnLine(0, "A Swamp Orc Adventure");
             int last = term.getHeight() - 1;
-            centerOnLine(last-1, "Copyright (C) 2012 Steven Black");
+            centerOnLine(image.getHeight(), "Copyright (C) 2012 Steven Black");
             /*
             term.mvputs(8, 0, "HOW TO PLAY");
             term.mvputs(9, 0, "-----------");
