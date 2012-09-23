@@ -249,10 +249,10 @@ public class Stumble {
         term.setCurForeground(7);
         dirtyStatus = false;
         for (int x = 0; x < term.getWidth()-1; x++) {
-            term.mvaddch(term.getHeight(), x, ' ');
+            term.mvaddch(term.getHeight()-1, x, ' ');
         }
         if (nextLocation <= '9') {
-            term.mvputs(term.getHeight(), 0, "Get the ");
+            term.mvputs(term.getHeight()-1, 0, "Get the ");
             term.setCurForeground((nextLocation - '0') + 0x4);
             term.addch(nextLocation);
             term.setCurForeground(7);
@@ -260,10 +260,10 @@ public class Stumble {
                 term.puts(" to win.");
             }
         } else {
-            term.mvputs(term.getHeight(), 0, "You won!");
+            term.mvputs(term.getHeight()-1, 0, "You won!");
         }
         String msg = "? for help.";
-        term.mvputs(term.getHeight(), term.getWidth()-msg.length()-1, msg);
+        term.mvputs(term.getHeight()-1, term.getWidth()-msg.length()-1, msg);
     }
 
     private void refreshScreen() {
