@@ -1,0 +1,61 @@
+# Reader and system prerequisites
+
+## You should already know how to program
+
+The first example is "Hello, World" written with Blacken. It qualifies as a simple test that your environment is configured properly and it demonstrates exactly what sort of programming overhead is present when using Blacken.
+
+You don't need to be familiar with Java's idiosyncrasies, but you should know object-oriented programming basics.
+
+You do not need to be familiar with any particular libraries outside of the core Java language.
+
+If you're already familiar with one object-oriented programming language picking up enough Java to use Blacken should be trivial. However, if you weren't taught Java in school, and you don't need Java for work, why would you use Java? If you're a C/C++ developer, you should consider using LibTCOD in C++ instead of Java as it currently has more features.
+
+I will be covering the details of how you do things the default way in Blacken, but Blacken's designed to give the developer a lot of freedom. if you don't like an implementation write your own.
+
+The goal of this tutorial is to show that using Blacken to write a traditional Roguelike game is simple and convenient. That said, if you decide to break with the very foundation of Roguelikes, Blacken -- while it might not make it easy -- should at least stay out of your way.
+
+## Blacken's Requirements
+
+* Java Development Kit 7 (the JDK)
+* Maven 3
+
+With Maven, every other dependency is automatically downloaded for you.
+
+Blacken is IDE agnostic. The only build-time configuration files we have are in the Maven "pom.xml" file. Use an environment you are comfortable with, first and foremost.
+
+## Java IDEs
+
+While Blacken allows you to develop from the command-line or from classic terminal editor environments like EMACS, there are some benefits of using a Java IDE.
+
+Blacken, like most Java libraries, uses JavaDoc comments in the source for the API documentation. A reasonable IDE will keep the API documentation at your fingertips. (This is something I had when I learned to program in the 1980s. It is a tremendous boon.)
+
+The modern IDEs will even let you preview API documentation while you write it. This would be why I do Blacken development within an IDE.
+
+The other issue is that Java is painfully verbose. Java IDEs contain features like code-completion, code-insertion and macros that can really help out.
+
+NetBeans even offers recommendations for things which are not good practice and can automatically correct or highlight potential issues for you that the compiler does not notice.
+
+Most Java IDEs will come with a bundled version of Maven 3, so you won't have that as a separate download.
+
+It is up to you, but the features of the modern Java IDEs are compelling. Most modern IDEs function more or less the same (and most allow you to change keybindings) so if you're familiar with one, picking up another tends to be straight-forward.
+
+Make sure you are already familiar with your toolset before you start a 7DRL.
+If you only have 40 hours to write and test the code, you need to avoid spending eight hours struggling with something that should be simple.
+
+### Warning about Apple-provided version of Java
+
+Due to having heard other Java developers and users complain about issues with the Apple-provided Java that does not exist in the official Oracle-provided Java, we do not recommend using the Apple-provided JDK, nor we recommend players use the Apple-provided JVM.
+
+Using a runtime environment which is known to have idiosyncrasies not found in the Oracle version means there will be bugs that only users running on Mac OS X with the Apple-provided JVM will experience.
+
+If someone reports a strange bug in Blacken that I can't reproduce, one of the early questions is: "What JVM and operating system are you using?" If they're using the Apple-provided JVM, or can't answer the JVM question but are using Mac OS X, my next response is to tell them to try the Oracle JVM and see if the problems go away.
+
+## What I am not covering here
+
+This book does not teach people how to program.
+
+This book does not cover design methodologies or common design patterns.
+
+This book does not pretend to be a comprehensive list of the possible libraries and toolkits you can use.
+
+There are plenty of other books about that stuff.

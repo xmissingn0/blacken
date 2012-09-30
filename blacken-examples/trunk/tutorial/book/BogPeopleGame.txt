@@ -1,0 +1,505 @@
+# Appendix: Original "Bog People" Game Idea
+
+## Life stages of the Bog People
+
+Bog people have 5 major life stages:
+
+### Eggs
+
+In water, at surface. They float on the surface.
+
+When dried they are an explosive if packed close together.
+
+When preserved, they can act as a grenade-like weapon.
+Only Bog-dwellers can stomach them.
+
+Stolen fresh eggs draw all kinds of Bog dwellers, unless eggs are in an
+enclosed, airtight container (like a flask).
+
+In canabalistic (or post-canabalistic) communities, eggs may be dried or
+preserved. (And bought/sold.)
+
+* Are eggs always eaten to keep population down?
+* In canabalistic starving communities, larve may eat eggs.
+* Normally, just larva are eaten?
+
+### Larval / Tadpole
+
+In water, under surface. Smell upstream / nearby.
+
+### Surface / Amphibian
+
+Located in/near water at/in edge.
+
+* play but have limited senses
+* like children, they must be protected
+
+### Pupal / listening stone
+
+Located in/near (bog) town.
+
+* primary purpose is to hear stories of people and goings on in town.
+
+### Adult
+
+Adults must "prove themselves" shortly after metamorphosis and before they
+breed.
+
+## History and plot design
+
+* initially they are peaceful and in balance with their neighbors
+* they are Chaotic and neighboring town is Lawful
+
+### First branch
+
+(1) farmer produces a "swamp monster" contest to see who can kill the most swamp monsters
+
+Normally, the contest is halted before it begins by the sheriff or by a local minister.
+
+### All adults killed
+
+If all adults are killed, the current listening stones (when metamorphosis is complete) will hunt down and kill the responsible parties.
+
+* First they breed furiously
+* Amphibians are taught "things" (play-battle)
+* stories are told to new batch of listening stones
+* they will try to learn the ways of war first
+
+### All adults and listening stones killed
+
+If all adults and listening stones are killed, most amphibians die off, the rest become stronger and tougher.
+
+* If there is enough food, they will eat the food.
+* else, they will resort to canabalism, and the survivors will lead a new vile, uncivil, dangerous warlike nation.
+  + In more serious situations, canabalism may occur at any life stage.
+
+All members of populations responsible become KOS (in Bogtown) in the future.
+
+They will eventually mass and try to destroy the neighboring town.
+
+### All adults and amphibians killed
+
+If all adults and amphibians are killed, a larger, stronger, more
+determined party will go after the people responsible.
+
+### Top 3 stages killed
+
+If top 3 stages killed, then the culture is destroyed.
+
+Future generations are more warlike and barbaric
+
+* Language is lost in Bog town
+* All non-Bog People are KOS
+
+Culture can be reestablished if the town gains contact with
+another Bog town.
+
+If left alone, eventually overpopulation and then canabalism sets in. -- Followed by disastrous war with neighbors.
+
+* This happens after new barbaric culture is established.
+* Pre-canabalism new culture is focused on pleasure and
+  future apocalypse.
+* Canabalism is viewed as the end of the world/culture.
+* Post-canabalism culture is focused on war, domination,
+  power and control
+
+Note: If the top 3 stages are killed, the damage is much more long-term and severe.
+
+# Appendix: Revised plot for Tutorial Game
+
+## What we're dropping
+
+No more breeding or evolving. No "barbaric" versions without culture.
+
+No more "listening stone" and "surface" stages. They're less like insects and
+more like traditional frogs.
+
+## What is being changed
+
+Instead we have Gandalf-like "mighty wizard" who travels from
+place-to-place. (The Ochre Mage?)
+
+The Bog People are the natural predator both of their own kin (which can
+still overflow into town) as well as the _actual_ Swamp Orcs, who have a
+similar life-cycle, but normally live under water.
+
+## Structure of the game
+
+### Quest: Contest afoot
+
+Swamp isn't a threat.
+
+Bog people can be easily killed.
+
+Bog magic is ineffective at offense.
+
+Only clump of armed Bog people were near the "dark well" which can't be
+damaged with player-provided tools.
+
+### Outcome: Halted Contest
+
+The player prevented the contest from happening.
+
+#### Unique side-quest: Orc in town.
+
+After Ochre Mage visits and goes to see the Swamp People, an isolated
+genuine adult Swamp Orc shows up in town and must be dispatched. Player
+doesn't know what it is, but entire town knows it isn't the beasts that
+live in the swamp.
+
+He is the only one in town capable of stopping the Swamp Orc. There may
+be some villagers that try, but they will fail. (In fact, the villagers
+may be responsible poorly aimed flaming arrows. -- Setting homes on fire.)
+
+On failure: Either "home-damaged" or "home-destroyed"
+
+#### Common side-quest: Find the Ochre Mage in the Bog Village (Swamp Survival)
+
+Swamp is significantly dangerous -- Bog People have bred things to
+fight the Swamp Orcs.
+
+Ochre Mage informs of Swamp Orcs.
+
+#### Future Goal: Remove the new Under-Bog exit
+
+We find there's another exit and the Swamp Orcs are becoming a greater
+threat.
+
+#### Unique side-quest: Rescue Kermit
+
+Bog-people-provided "test" that must be completed: rescue Kermit
+who was caught by the spiders being bred by his father and return him to
+his mother. The request is specifically for Kermit's body "dead or alive".
+
+Kermit can't be carried with your equipment. You need to abandon most of
+your belongings to carry Kermit -- unless you butcher him.
+
+##### On success (alive)
+
+Kermit gives him Glug-glug Root bypassing "Glug-glug Root" quest.
+
+##### On success (dead)
+
+The Bog People ignore him and disappear for a bit. When
+they return, Kermit is recovering in bed. Kermit tells the location of the
+Glug-glug root he had in his father's camp. (Flash to camp and highlight
+location. If unknown, know the cells around the item only.)
+
+##### Failure to return the corpse
+
+You will get no further help until the corpse
+is returned -- lost time. A failure to return the corpse is a failure of the
+test. He is unworthy of the task ahead.
+
+At first failure, require "Glug-glug Root" quest. (He's seen as
+semi-incompetant and they are unsure if he'll survive what lies ahead.)
+
+##### Returning desecrated corpse (just bones/head/etc)
+
+They are not happy.
+
+Flag "no-restoration".
+
+Require "Glug-glug Root" quest.
+
+#### Common Quest: Collect Glug-glug Root
+
+Pick up the common plot-line at "Collect Glug-glug Root" (or just after if he
+already has one).
+
+### Outcome: Imperfect Genocide
+
+Ochre Mage visits to warn that someone or something killed most of the Bog
+People, and as a result their population is going to spike. S/He warns that
+s/he must go and try to civalize them and will be unable help when the
+Boglings eventually swarm.
+
+#### Unique side-quest: Bogling Swarm
+
+Prevent your town from being overrun by Boglings -- scaled up in number
+for the life stages that were killed off.
+
+On failure: Either "home-damaged" or "home-destroyed"
+
+After the Boglings storm town, you must enter Swamp Town to check on the
+Ochre Mage.
+
+#### Goal: Find the Ochre Mage in the Bog Village (Village Battle)
+
+Swamp is as peaceful as before -- if not more so.
+
+When you reach Bog Town, you find the Ochre Mage protecting a group of
+Boglings from an attacking band of Swamp Orcs.
+
+After killing off the Swamp Orcs you're seen as a mighty hero to the
+Boglings -- adored. The Boglings offer to go get a Glug-glug Root for
+you, but the Ochre Mage refuses and says you must get it.
+
+The Ochre Mage informs you that the People used to get fresh
+root in a valley on the other side of the mountains, but that the mountains
+have recently become infested with rats. This is worrisome as the
+Shadow of Fear -- where the Glug-glug root is found -- is a regular
+haunt of necromancers, and the spiders have an uncanny nack for
+neutralizing the undead.
+
+#### Future Goal: Remove the new Under-Bog exit
+
+The Boglings have found another exit in the Under-Bog. (It flashes on
+screen.) The Ochre Mage informs you it must be removed.
+
+#### Common Quest: Collect Glug-glug Root
+
+Pick up the common plot-line at "Collect Glug-glug Root".
+
+### Outcome: Genocide
+
+Ochre Mage visits to warn that someone or something killed all of the Bog
+People, and as a result the Swamp Orc population will be growing
+out-of-control.
+
+The Ochre Mage must see about a "bride" of the only species that is left
+that is a natural Swamp Orc predator. S/he is very imprecise, and you get
+no additional help from the Ochre Mage -- gone until the end-scene.
+
+#### Unique side-quest: Seal the Dark Well
+
+When blame is directed at you, you are given the task of sealing "the dark
+well" in the Bog Town.
+
+The swamp on the way there quiet, though there are some scattered (new)
+skeletons.
+
+The Dark Well is surrounded by a dispatch of adult Swamp Orcs.
+
+#### Unique side-quest: Zombie invasion
+
+After well is sealed and orcs killed you return home to find it swarming
+with undead Bog People killing/burning town. No one actually dies until
+you get there.
+
+#### Common Quest: Collect Glug-glug Root
+
+The town elder knows that the Shadow of Fear is commonly used by necromancers.
+
+During the invasion there was one undead Swamp Orc, and the elders came to the
+consensus that there's probably another entrance to the Under-Bog in that
+area.
+
+Without the Ochre Mage to provide another Seal, the elders recommend eating
+some of the Glug-glug root that grows in the Shadow of Fear, and doing the
+job the Bog People would have done -- culling the over-abundance of Orclets.
+
+There is some disagreement about this, and the player makes out,
+"transformation", "s/he brought this on 'erself", and "perhaps the Ochre Mage
+can change him/her back if s/he survives."
+
+Everyone knows that even if there is only one entrance, it won't last forever.
+Even the Ochre Mage wasn't sure it would last until s/he returned. If there's
+a second exit, the population pressures need to be reduced or next time there
+will be even greater numbers.
+
+If s/he was unsuccessful at saving his town (which should be quite likely),
+the player will not actually have anyone to give her/him direction. In this
+case the quest title becomes "Seek Vengence" with the actual goals the same.
+
+### Flag: home-okay
+
+Fully functional town store.
+
+Important for: weapons, armor, food, ritual supplies
+
+### Flag: home-damaged
+
+A subset of town and the population are destroyed.
+Did he save his two sweethearts? Just one? Their parents?
+
+Town store only has essentials.
+
+Important for: food, ritual supplies
+
+### Flag: home-destroyed
+
+Both the person-he-loves (but his/her
+parents disprove), and the person-that-loves-him (and his/her parents
+adore him) are killed. So are his parents. In fact, the town is burned
+to the ground. (In an attempt to destroy the fire, the Orc collapses
+houses, crushing those inside and setting them ablaze in the process.
+
+You have no town store. No supplies other than what were already collected.
+
+Since setting up camp automatically gathers and prepares food if none is
+already available, this doesn't mean automatic death.
+
+It is very unlikely for this to happen when the player does not already
+have a weapon. We can detect this and "find" a club when entering the
+forest.
+
+### Common Quest: Collect Glug-glug Root
+
+Regardless of how we got here, we need to aquire Glug-glug Root.
+
+Collect Glug-glug Root from beyond Spider Valley in the
+Shadow of Fear (Point) -- where an amateur Necromancer from out-of-town
+has set up shop.
+
+Variation: If in 'contest-halted' branch, the spiders are the larger
+threat. Otherwise the undead (and rats) are the larger threat. Genocide
+means there were a surplus of bodies to use.
+
+The Spiders' webs contain occult symbols which neutralize the undead.
+Even a small spider web will neutralize the undead. The enhanced-threat
+spiders are not larger, but their webs are more magical so they can
+neutralize a broader swath of beings.
+
+Part of the journey involves leading zombies and other undead in to webs,
+while avoiding them yourself.
+
+Defeating the necromancer involves hitting him with fresh meat. He has
+inadvertently surrounded himself with rats (which have been consuming
+his army). When they smell the fresh meat on him, they swarm and devour
+him. (He might hit the meat with some magic, causing it to explode
+in a bloody mess.)
+
+### Common Quest: Descend the Dark Well
+
+With the Glug-glug Root you can now descend in to the world of the Swamp
+Orcs by way of the Dark Well. (Or the Alternate Entrance) The root provokes
+a transformation -- which only the adult Bog People can reverse -- and even
+then only if they want to. 
+
+The Swamp Orcs -- when under water -- do not recognize you as a threat. They
+recognize you as a "foreigner" -- but you are clearly not a Bog Person, and
+they have no enemies (in this part of the world) other than Bog People below
+the surface.
+
+Like the Bog People, they eat their own young, but in an effort to protect
+them from the Bog People, they've been hiding them in chambers under
+ground.
+
+#### Common quest: Remove the new Under-Bog exit
+
+It turns out the new Under-Bog exit is clearly fragile and easy to collapse.
+
+### Common Quest: Cull a clutch before it ascends toward town
+
+They need to cull a clutch so that they don't burst forth and
+start more slaughter.
+
+While there, we find someone having a snack.
+
+We're then informed that there is a city, and that there's an Orc King/Queen
+who is responsible for the new ideas and approaches. The general sentiment
+is that all the mazes and dungeons are an inconvienance and that it makes it
+harder for everyone to eat regularly. They don't even actually want to live
+in a city.
+
+The King/Queen is also a foreigner -- but a foreigner from the Sacred
+Clutch -- an ancient and sacred nesting site.
+
+### Common Quest: An Audience with the King/Queen
+
+Audience with the King/Queen is easy to achieve -- just pass through a
+series of dungeons. There s/he accuses you of being from "Accursed
+Yith" -- 'Yith' not being a town you're familiar with it leads you to the
+Sacred Clutch and a new set of dungeons.
+
+### Common Quest: The Accursed City
+
+In the Sacred Clutch is a magic portal. On the other side is Yith. Yith
+doesn't seem at all "accursed" -- they seem happy and healthy. Meeting the
+village elder reveals that the Consort of Demons was banished due
+to -- surprise! -- conjuring evil forces. You are given a sacred artifact
+with which to neutralize him/her and which will protect you from him/her
+magic in the future. It will not protect you from the demons s/he summons,
+though.
+
+### Common Quest: Returning the Consort
+
+Prior to visiting Yith, the city was covered in hiddeous deformed
+statuary. The primary occupation of the workers of Yith was to slave away
+creating this statuary. When you return, all of these statues are flowing
+with vibrant life. Evil, hiddeous mockeries of life, but seemingly
+self-aware. You need to get through the dungeon for the palace and confront
+the King/Queen.
+
+The actual confrontation is a non-event due to the
+artifact -- and when placed around his/her neck both of them _poof_ off to
+Yith.
+
+### Common Quest: Return to Bog Town
+
+Upon returning to Bog Town -- where the Ochre Mage promised to meet
+you -- you are confronted with the fact that the Glug-glug Root has turned
+you in to a hiddeous beast. It wraps us back up to the consequences of our
+initial actions:
+
+#### Contest Halted
+
+Flag "no-restoration":
+
+You are told "the Bog People are still sore with you about Kermit and refuse
+to restore you to normal."
+
+Jump to "Partial Genocide's trailer with the Ochre Mage leading you away.
+
+Otherwise:
+
+The Bog People use their magic to restore you to normal where you can reunite
+with your surviving sweetheart(s). (If s/he survived the Swamp Orc attack.)
+
+#### Partial genocide
+
+You are informed the Bog People _used_ to have a method of restoring folks
+to normal after they've eaten the Glug-glug Root, but that it was lost. The
+Ochre Mage did his best to try to recover the lost secrets, but the Mage's
+ritual magic is quite different than the Bog People's holistic magic.
+
+You are escourted by the Ochre Mage to a land where you will fit in better
+and might yet find a mate.
+
+#### Genocide
+
+You are met in Bog Town by your "bride" -- a being even more hiddeous than
+yourself -- and the Ochre Mage. The Ochre Mage assures you that he's performed
+magic on the "bride" to make sure she is biologically compatable with you.
+
+The two of you will be raising a new people in Bog Town -- as someone needs
+to be around to cull off the Swamp Orcs when their population gets out of
+control.
+
+# Game Mechanics
+
+## Stamina versus Hunger
+
+While we could go with a "stamina" stat, this can be used like the hunger
+count. Due to religious observances, you must only eat in camp. Foraging
+while in camp is always successful -- and slows you down predictably.
+
+## Time-constrained
+
+There's no point in having a concept of "camping" and using either stamina
+or hunger if there isn't something to be lost by it.
+
+That is, a technique that can't fail should just be removed.
+
+So, there's a day-counter, and when the count reaches zero a massive army of
+Orclets hatch, eat everything they can and head for the surface. Your town
+includes "everything" as does you. (And even their parents.)
+
+This is because the King/Queen _thinks_ s/he is raising an army. There's a bit
+of a disconnect on the exact nature of the Orclets and exactly how hungry they
+are when they are born.
+
+## Rules
+
+The only rules to implement are the rules that will serve the game.
+
+I'm favoring modeling things after Fudge, with a simple triple set of core
+attributes.
+
+Skills? Maybe, maybe not. If I have professions, they can be implemented as
+skills.
+
+I favor scaling everything on the player's level and never
+attribute-bumping.
+

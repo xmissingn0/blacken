@@ -1,0 +1,29 @@
+# The structure of the example code
+
+This book has been written so that the example code package is optional.
+
+This means that all of the source used in the tutorial is available as program listings in the book.
+
+Some people find they learn better by actively retyping code in to an editor.
+
+Due to the way Java organizes the packages, you need to know how the code is expected to be structured even if you're going to retype everything.
+
+The main tutorial game is in:
+
+    src/main/java
+    src/main/resources
+
+We will be periodically covering packages and classes we expect to be in the final version of the game. Interspersed within these will be one-off tests and reproducible automated unit tests. Both unittests and interactive tests will exist in the following location:
+
+    src/test/java
+    src/test/resources
+
+Unittests will exist in packages that packages that mirror the source that they will be testing. Most of these will exist somewhere in:
+
+    com.googlecode.blacken.tutorial
+
+The one-off and other interactive tests are located in a different package:
+
+    tutorial
+
+If you are forking this codebase to create your own project you can drop everything in this non-standard "tutorial" package as none of it will be of value to you.

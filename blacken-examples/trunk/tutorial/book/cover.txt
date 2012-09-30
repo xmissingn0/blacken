@@ -1,0 +1,2 @@
+![Developing Roguelikes with Blacken by Steven Black](images/cover.jpg) \
+

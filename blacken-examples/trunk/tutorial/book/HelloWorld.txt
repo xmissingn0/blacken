@@ -1,0 +1,299 @@
+# Start small, but think big
+
+When you start writing your code, you need to think about the big picture.
+
+There are two things you need to consider:
+
+1. Maintaining the code.
+2. Extending the code.
+
+The key to being able to maintain code is to use variable and function names
+that make sense in context. Things that are not immediate self-evident should
+be documented in comments and/or JavaDocs.
+
+Any possible question about input or output should be answered in the JavaDocs
+so you don't need to consult the source when using the function.
+
+Make sure the first sentence is _meaningful_ and not just a repetition of the
+function name. IDEs will crop the documentation -- it is easy to see the full
+thing, but, if there are a couple variations of a function you need to be clear
+about the differences up front so the right function can be picked quickly.
+
+Extending the code  is a matter of structure and reuse. Well structured code
+is easy to reuse. There are techniques that are supposed to assist, but
+everything is dependant upon a well-structured API.
+
+It is possible to reuse poorly structured code. People who believe
+object-oriented code is somehow a panacea fail to recognize that API churn is
+the surest sign of poorly structured code.
+
+For Java interface standards are key. The underlying implementation can change
+and the code to use it does not change.
+
+Needing to write your own interface to abstract access to one or more
+third-party libraries is the surest sign of poorly structured code. (The fact
+that you can't assign an interface to an existing class, yet regularly need
+to, is a flaw in the Java language.) The fact that Java is layered with
+abstractions over abstractions is a design trap they've generally embraced.
+
+Here's something to consider: java.util.Date is the super class of
+java.sql.Date, neither one uses an interface, and the documentation explicitly
+states you cannot use them interchangeably. Doing something like that is easy
+with poorly structured object-oriented code. Leaving the situation as broken
+as this is foolish. Suck it up, and create an Interface. Yes, it will break
+ABI and/or serialization compatibility, but you will be fixing a major problem
+with your API.
+
+Now, the absolutely simplest version of "Hello, World" you can write with
+Blacken is as follows:
+
+~~~~~~ {.java .numberLines}
+/* blacken - a library for Roguelike games
+ * Copyright © 2012 Steven Black <yam655@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package tutorial;
+
+import com.googlecode.blacken.swing.SwingTerminal;
+import com.googlecode.blacken.terminal.TerminalInterface;
+
+/**
+ * The simplest "Hello, World" in Blacken.
+ *
+ * @author Steven Black
+ */
+public class HelloWorld {
+
+    /**
+     * Start the application.
+     *
+     * @param args all ignored
+     */
+    public static void main(String[] args) {
+        TerminalInterface term = new SwingTerminal();
+        term.init("Hello", 25, 80);
+        term.putString(0, 0, "Hello, World!");
+        while(term.isRunning()) {
+            term.getch();
+        }
+        term.quit();
+    }
+}
+~~~~~~
+
+![Hello World](images/HelloWorld.png) \
+
+This breaks down in a straight-forward way:
+
+~~~~~~ {.java .numberLines startFrom="1"}
+/* blacken - a library for Roguelike games
+ * Copyright © 2012 Steven Black <yam655@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+~~~~~~
+
+This is the license header. In a closed source game it would just include the copyright notice. In open-source games it is important to explicitly reference both the copyright owner and license the file is released under.
+
+The example code is licensed under the Apache 2.0 license, but the book is licensed under the Creative Commons Attribution license. The licenses grant similar permissions to use the products as you like as long as attribution is retained. This makes the two licenses "compatible."
+
+If the book was limited to non-commercial purposes, it would mean the example code package would have additional permissions that the example code in the book didn't allow.
+
+~~~~ {.java .numberLines startFrom="17"}
+package tutorial;
+~~~~
+
+The primary output of this tutorial is a complete and playable game. Additionally, we may also have JUnit tests which could be incorporated in to your own test suite.
+
+The classes and packages in the `tutorial` package, however, are really useless outside of this tutorial. If you base a product off of the example code, it is expected that you'll just drop the entire contents of this directory.
+
+~~~~ {.java .numberLines startFrom="19"}
+import com.googlecode.blacken.swing.SwingTerminal;
+~~~~
+
+Our main concrete class for the Blacken user-interface.
+
+In our example we use the `TerminalInterface` interface for access, and only
+construct the `SwingTerminal`.
+
+~~~~ {.java .numberLines startFrom="20"}
+import com.googlecode.blacken.terminal.TerminalInterface;
+~~~~
+
+The key to reusability in Java lies with interfaces. With Blacken the key
+interface is the `TerminalInterface`.
+
+By using the interface instead of the concrete class, you can swap out the
+concrete class -- or add a wrapper class -- without changing the rest of your
+code.
+
+~~~~ {.java .numberLines startFrom="22"}
+/**
+ * The simplest "Hello, World" in Blacken.
+ *
+ * @author Steven Black
+ */
+~~~~
+
+If you're unfamiliar with Java comments that look like this, I highly
+recommend you read about "JavaDoc" comments.
+
+~~~~ {.java .numberLines startFrom="34"}
+    public static void main(String[] args) {
+~~~~
+
+To be a runnable program, we need a main static function. This particular
+program is super simple so all it has is one static function.
+
+~~~~ {.java .numberLines startFrom="35"}
+        TerminalInterface term = new SwingTerminal();
+        term.init("Hello", 25, 80);~
+~~~~
+
+Java makes it hard to define an interface as requiring a constructor. For
+Blacken we have a null constructor and we don't construct a window until
+`init(...)` is called.
+
+The first string is the window title. If this isn't the name of your
+application you risk confusing your users. If you don't use a splash screen,
+you might consider adding the version number to the title.
+
+Blacken, like Curses before it always uses Y in front of X. This means when
+specifying the size you specify rows and then columns.
+
+There is no way to specify pixel dimensions for window sizes. This is on
+purpose. It serves two roles:
+
+1. On small devices (like Android phones) pixels are smaller due to greater
+   pixel density.
+
+2. For people with accessibility concerns, the number of pixels and size of
+   the screen does not relate to the screen usability.
+
+Blacken is designed to support Roguelikes for the mildly visually impared. Not
+total blindness, but if a person can see anything and has a large enough
+monitor (or TV) that they can read text on it, Blacken should be immediately
+usable.
+
+This means that Blacken automatically scales the font so that it is as large
+as possible while keeping at least 25 x 80 cells on screen. This makes it easy
+for the developer -- they know the screen is usually similar to the size they
+they designed it for -- while also being easy for folks who desperately want
+the font to be bigger.
+
+At some point in the future Blacken will have a user-configurable setting to
+limit the max size of the font. This will cover people who want more cells on
+screen instead of a larger font. Since the default will always be to make the
+font bigger, it will continue to meet the needs of those who will need the
+font bigger before they can even navigate a configuration setting.
+
+By default all Blacken applications support Alt-Enter to enter fullscreen
+mode. This can be disabled by applications, but developers are encouraged to
+keep it -- at least for the default key-mapping. Even this minimal hello world
+application supports it.
+
+~~~~ {.java .numberLines startFrom="37"}
+        term.putString(0, 0, "Hello, World!");
+~~~~
+
+This is the line that actually writes the text to the screen.
+
+It isn't obvious in this code, but `putString`, like all Blacken functions,
+takes the row before the column.
+
+~~~~ {.java .numberLines startFrom="38"}
+        while(term.isRunning()) {
+            term.getch();
+        }
+~~~~
+
+We're looping until the window-close button is pressed, ignoring all keys
+that arrive.
+
+The Blacken event mechanism is centered around the getch() call. It directly
+mimics Curses in this regard.
+
+As a side-effect, we don't actually fully process window resize events until
+we see a getch() call. This prevents window resizing from changing your
+program-visible grid size mid-operation. If you take the getch() call out,
+you find tiny text in the upper-left corner that is never resized.
+
+The Alt-Enter is also handled in the getch() call. We should talk about this
+more, as it exposes some important aspects of Blacken.
+
+Blacken sends all key commands as valid Unicode codepoints. It does this while
+also having distinct codepoints for special keys as well as allowing modifiers
+to be used freely. It leverages the Unicode Private Use Areas. In particular,
+plane 15 and plane 16. Plane 16 is used by special characters, and plane 15
+is treated as a bit-mask of the modifier keys.
+
+~~~~ {.java .numberLines startFrom="41"}
+        term.quit();
+~~~~
+
+In this class, this command is actually optional.
+
+Quit is called automatically when the window is closed, and since that is the
+only way this can exit, it is guaranteed to happen.
+
+That said, it is good practice to keep it. In normal cases, you would have a
+loop that checked for an "isRunning" or "!quit" state. When someone requested
+the application exit, it would exit the loop and close down the window.
+
+If this were Curses, you would need to put this in a `finally` block so that
+it got called even when exceptions were not processed. This is not Curses,
+though.
+
+## Returning to reusability of code
+
+Now, let's look at the current example code and again think about reusability.
+
+It is just a main function. It is entirely _un-reusable_.
+
+More than that, what sort of reusability should even be required for such code?
+
+Well, truthfully, this code -- by itself -- doesn't need to be reusable, so we
+don't need to do anything here. That said, it is already clear that all of our
+future code will need to be more reusable than this.
+
+If you were to extend the hello world example, how would you refactor it to
+make it more reusable? What sort of scale are we talking about, in terms of
+reusability?
+
+Now, if you ever deal with something that could potentially be written with
+generics, I recommend going with them from the beginning. Using generics in
+the design early can help focus on the key aspects of the class and minimize
+areas where you might otherwise tightly bind two classes.
+
+In fact, the Grid class -- used heavily by the display code -- was written
+from the start with generics in mind. The ColorPalette, on the other hand,
+had a generic superclass extracted from the API. Personally, I find starting
+generic is faster and easier.
+
+The important thing is this: reusable code can save you time and make things
+easier to debug. Making code reusable when you will never need to reuse it
+always wastes time.
+
+Be smart. First make it work, then make it work better.

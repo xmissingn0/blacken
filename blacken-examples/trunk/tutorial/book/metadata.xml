@@ -1,0 +1,13 @@
+<dc:rights>Creative Commons Attribution 3.0</dc:rights>
+<dc:language>en-US</dc:dc-US>
+<dc:creator>Steven Black</dc:creator>
+<dc:date>2012-09-19</dc:date>
+<dc:description>This is a tutorial describing the design and development of
+	a game using the Blacken library. Blacken is a Java library focusing
+	on Roguelike game development using a character-based user-interface.
+</dc:description>
+<dc:identifier>Part of Blacken 1.2</dc:identifier>
+<dc:source>http://blacken.googlecode.com/svn/blacken-examples/trunk/tutorial/</dc:source>
+<dc:subject>Java 7; Java; Roguelike development; Library; Blacken</dc:subject>
+
+
