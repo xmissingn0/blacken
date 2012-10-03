@@ -18,7 +18,6 @@ package com.googlecode.blacken.examples.tutorial;
 
 import com.googlecode.blacken.colors.ColorHelper;
 import com.googlecode.blacken.colors.ColorPalette;
-import com.googlecode.blacken.exceptions.InvalidStringFormatException;
 import com.googlecode.blacken.grid.Grid;
 import com.googlecode.blacken.grid.Point;
 import com.googlecode.blacken.grid.Sizable;
@@ -28,8 +27,10 @@ import com.googlecode.blacken.terminal.BlackenImageLoader;
 import com.googlecode.blacken.terminal.BlackenKeys;
 import com.googlecode.blacken.terminal.BlackenMouseEvent;
 import com.googlecode.blacken.terminal.BlackenWindowEvent;
+import com.googlecode.blacken.terminal.CellWalls;
 import com.googlecode.blacken.terminal.TerminalCellTemplate;
 import com.googlecode.blacken.terminal.TerminalInterface;
+import com.googlecode.blacken.terminal.TerminalStyle;
 import com.googlecode.blacken.terminal.editing.Alignment;
 import com.googlecode.blacken.terminal.editing.BreakableLoop;
 import com.googlecode.blacken.terminal.editing.CodepointCallbackInterface;
@@ -94,17 +95,21 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
         case 'l':
         case 'L':
             HelpSystem.myLicense(term);
+            this.redisplay();
             break;
         case 'n':
         case 'N':
             HelpSystem.legalNotices(term);
+            this.redisplay();
             break;
         case 'f':
         case 'F':
             HelpSystem.fontLicense(term);
+            this.redisplay();
             break;
         case '?':
             HelpSystem.help(term);
+            this.redisplay();
             break;
         default:
             this.quit = true;
@@ -132,13 +137,6 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
     }
 
     private void setup() {
-        /*
-        try {
-            // gradient = ColorHelper.createGradient(null, 12, ColorHelper.lookup(null, "#271f0f", "#863"));
-        } catch (InvalidStringFormatException ex) {
-            throw new RuntimeException(ex);
-        }
-        */
         this.gradientColors = ColorHelper.createGradient(null, 12,
                 ColorHelper.lookup(null, 0xfff0f0e0, 0xffffffef));
         BlackenImageLoader imageLoader = term.getImageLoader();
@@ -160,9 +158,10 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
     }
 
     private void redisplay() {
-        SingleLine.applyTemplate(term, -1, -1, 0, 0,
-                new TerminalCellTemplate(new WoodGrain(gradient), " ", 
-                0xFF000000, null));
+        TerminalCellTemplate clearCell = new TerminalCellTemplate(
+                new WoodGrain(gradient), " ", 0xFF000000, null,
+                EnumSet.noneOf(TerminalStyle.class), EnumSet.noneOf(CellWalls.class));
+        SingleLine.applyTemplate(term, clearCell);
         Images.imageToSequence(term, 0,
                 (term.getWidth() - imageColors.getWidth()) / 2, image, null);
         Images.imageToBackground(term, 0,

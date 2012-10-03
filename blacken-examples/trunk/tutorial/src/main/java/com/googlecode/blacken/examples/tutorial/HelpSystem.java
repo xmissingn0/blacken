@@ -16,8 +16,13 @@
 
 package com.googlecode.blacken.examples.tutorial;
 
+import com.googlecode.blacken.colors.ColorHelper;
 import com.googlecode.blacken.core.Obligations;
+import com.googlecode.blacken.exceptions.InvalidStringFormatException;
+import com.googlecode.blacken.terminal.TerminalCellTemplate;
 import com.googlecode.blacken.terminal.TerminalInterface;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -59,31 +64,54 @@ public class HelpSystem {
 "L : show my license                  | N : show legal notices\n" +
 "\n" +
 "? : this help screen\n";
+    private final List<Integer> gradientNormal;
+    private final List<Integer> gradientMessage;
 
     public HelpSystem(TerminalInterface term) {
         this.term = term;
+
+        try {
+            gradientNormal = ColorHelper.createGradient(null, 12, ColorHelper.lookup(null, "#271f0f", "#863"));
+        } catch (InvalidStringFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        gradientMessage = new ArrayList<>();
+        for (int c : gradientNormal) {
+            gradientMessage.add(ColorHelper.multiply(c, 0.5F));
+        }
     }
     public void legalNotices() {
         // show Notices file
         // This is the only one that needs to be shown for normal games.
         ViewerHelper vh;
         vh = new ViewerHelper(term, "Legal Notices", Obligations.getBlackenNotice());
-        vh.setColor(7, 0);
+        vh.setColor(new TerminalCellTemplate(new WoodGrain(gradientNormal),
+                " ", 0xFFe0e0e0, null));
+        vh.setMessageColor(new TerminalCellTemplate(new WoodGrain(gradientMessage),
+                " ", 0xFFe0e0e0, null));
         vh.run();
     }
 
     public void fontLicense() {
         // show the font license
         ViewerHelper vh;
-        new ViewerHelper(term,
+        vh = new ViewerHelper(term,
                 Obligations.getFontName() + " Font License",
-                Obligations.getFontLicense()).run();
+                Obligations.getFontLicense());
+        vh.setColor(new TerminalCellTemplate(new WoodGrain(gradientNormal),
+                " ", 0xFFe0e0e0, null));
+        vh.setMessageColor(new TerminalCellTemplate(new WoodGrain(gradientMessage),
+                " ", 0xFFe0e0e0, null));
+        vh.run();
     }
 
     public void help() {
         ViewerHelper vh;
         vh = new ViewerHelper(term, "Help", helpMessage);
-        vh.setColor(7, 0);
+        vh.setColor(new TerminalCellTemplate(new WoodGrain(gradientNormal),
+                " ", 0xFFe0e0e0, null));
+        vh.setMessageColor(new TerminalCellTemplate(new WoodGrain(gradientMessage),
+                " ", 0xFFe0e0e0, null));
         vh.run();
     }
 
@@ -91,7 +119,10 @@ public class HelpSystem {
         // show Apache 2.0 License
         ViewerHelper vh;
         vh = new ViewerHelper(term, "License", Obligations.getBlackenLicense());
-        vh.setColor(7, 0);
+        vh.setColor(new TerminalCellTemplate(new WoodGrain(gradientNormal),
+                " ", 0xFFe0e0e0, null));
+        vh.setMessageColor(new TerminalCellTemplate(new WoodGrain(gradientMessage),
+                " ", 0xFFe0e0e0, null));
         vh.run();
     }
 

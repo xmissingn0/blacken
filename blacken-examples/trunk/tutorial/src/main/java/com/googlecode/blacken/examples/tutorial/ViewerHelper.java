@@ -66,7 +66,8 @@ public class ViewerHelper implements CodepointCallbackInterface {
         if (template == null) {
             throw new NullPointerException("template cannot be null");
         }
-        this.template = template.clone();
+        template = new TerminalCellTemplate(template);
+        this.template = template;
     }
     public void setColor(int foreground, int background) {
         template = new TerminalCellTemplate();
@@ -85,10 +86,18 @@ public class ViewerHelper implements CodepointCallbackInterface {
         messageTemplate.setForeground(foreground);
     }
     public void setMessageColor(TerminalCellTemplate template) {
-        if (messageTemplate == null) {
+        if (template == null) {
             throw new NullPointerException("template cannot be null");
         }
-        this.messageTemplate = template.clone();
+        template = new TerminalCellTemplate(template);
+        try {
+            if (template.getSequence() == null) {
+                template.setSequence(" ");
+            }
+        } catch(NullPointerException ex) {
+            template.setSequence(" ");
+        }
+        this.messageTemplate = template;
     }
     public void setMessageColor(String foreground, String background) {
         ColorPalette palette = term.getBackingTerminal().getPalette();
@@ -101,6 +110,7 @@ public class ViewerHelper implements CodepointCallbackInterface {
         EnumSet<BlackenEventType> oldNotices = term.getEventNotices();
         term.setEventNotices(EnumSet.of(BlackenEventType.MOUSE_WHEEL));
         displayFrame();
+        viewer.setColor(messageTemplate);
         viewer.run();
         term.setEventNotices(oldNotices);
     }
@@ -136,9 +146,10 @@ public class ViewerHelper implements CodepointCallbackInterface {
         view.setBounds(term.getHeight()-1-helpViewer.getLines(), term.getWidth()-2, 1, 1);
         helpView.setBounds(helpViewer.getLines(), term.getWidth(), term.getHeight()-helpViewer.getLines(), 0);
 
-        SingleLine.applyTemplate(term, -1, -1, 0, 0, template);
-        SingleLine.applyTemplate(view, -1, -1, 0, 0, messageTemplate);
+        SingleLine.applyTemplate(term, template);
+        SingleLine.applyTemplate(view, messageTemplate);
 
+        helpViewer.setColor(template);
         helpViewer.step();
 
         for (int x = 1; x < term.getWidth()-1; x++) {
