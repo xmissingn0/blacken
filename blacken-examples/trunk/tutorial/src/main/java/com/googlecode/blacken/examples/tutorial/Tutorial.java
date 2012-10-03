@@ -28,6 +28,7 @@ import com.googlecode.blacken.extras.PerlinNoise;
 import com.googlecode.blacken.grid.Grid;
 import com.googlecode.blacken.grid.Point;
 import com.googlecode.blacken.grid.Positionable;
+import com.googlecode.blacken.grid.SimpleSize;
 import com.googlecode.blacken.resources.ResourceMissingException;
 import com.googlecode.blacken.swing.SwingTerminal;
 import com.googlecode.blacken.terminal.*;
@@ -102,22 +103,9 @@ public class Tutorial {
     private Set<Integer> roomWalls;
     private List<Map<Integer, Representation>> representations = new ArrayList<>();
     private int represent = 0;
-    private final int BASE_WIDTH = 80;
-    private final int BASE_HEIGHT = 25;
-    private String helpMessage =
-"Tutorial Example Commands\n" +
-"============================================================================\n" +
-"Ctrl+L : recenter and redisplay the screen\n" +
-"j, Down : move down                  | k, Up : move up\n" +
-"h, Left : move left                  | l (ell), Right: move right\n" +
-"\n" +
-"Space : next representation set      | Backspace : previous representations\n" +
-"\n" +
-"Q, q, Escape : quit\n" +
-"\n" +
-"L : show my license                  | N : show legal notices\n" +
-"\n" +
-"? : this help screen\n";
+    private static final int BASE_WIDTH = 80;
+    private static final int BASE_HEIGHT = 25;
+    private HelpSystem helpSystem;
 
     public void addRepresentations() {
         // default
@@ -551,19 +539,19 @@ public class Tutorial {
                 this.quit = true;
                 return false;
             case 'L':
-                showMyLicense();
+                helpSystem.myLicense();
                 refreshScreen();
                 break;
             case 'N':
-                showLegalNotices();
+                helpSystem.legalNotices();
                 refreshScreen();
                 break;
             case 'F':
-                showFontLicense();
+                helpSystem.fontLicense();
                 refreshScreen();
                 break;
             case '?':
-                showHelp();
+                helpSystem.help();
                 refreshScreen();
                 break;
             default:
@@ -643,11 +631,11 @@ public class Tutorial {
             term = new SwingTerminal();
             term.init("Blacken Example: Swamp Orc Adventure", BASE_HEIGHT, BASE_WIDTH);
         }
-        this.term = new CursesLikeAPI(term);
+        this.term = term;
         if (palette == null) {
             palette = new ColorPalette();
             palette.addAll(ColorNames.XTERM_256_COLORS, false);
-        } 
+        }
         this.term.setPalette(palette);
         addRepresentations();
     }
@@ -660,7 +648,9 @@ public class Tutorial {
     public static void main(String[] args) {
         Tutorial that = new Tutorial();
         that.init(null, null);
-        that.splash();
+        SplashScreen screen = new SplashScreen(that.term, 
+                new SimpleSize(BASE_HEIGHT, BASE_WIDTH));
+        screen.run();
         that.loop();
         that.quit();
     }
@@ -674,141 +664,4 @@ public class Tutorial {
         term.quit();
     }
 
-    private void centerOnLine(int y, String string) {
-        int offset = term.getWidth() / 2 - string.length() / 2;
-        term.putString(y, offset, string);
-    }
-
-    private void alignRight(int y, String string) {
-        int offset = term.getWidth() - string.length();
-        if (term.getHeight() -1 == y) {
-            offset--;
-        }
-        term.putString(y, offset, string);
-    }
-
-    private void splash() {
-        boolean ready = false;
-        term.disableEventNotices();
-        List<Integer> gradient;
-        try {
-            // gradient = ColorHelper.createGradient(null, 12, ColorHelper.lookup(null, "#271f0f", "#863"));
-            gradient = ColorHelper.createGradient(null, 12, ColorHelper.lookup(null, "#efefe5", "#ffffcf"));
-        } catch (InvalidStringFormatException ex) {
-            throw new RuntimeException(ex);
-        }
-        Grid<Integer> image;
-        BlackenImageLoader imageLoader = term.getImageLoader();
-        try {
-            image = imageLoader.loadImage(this.getClass(), "Splash.txt");
-        } catch (ResourceMissingException ex) {
-            throw new RuntimeException(ex);
-        }
-        Grid<Integer> imageColors;
-        try {
-            imageColors = imageLoader.loadImage(this.getClass(), "SplashColor.txt");
-        } catch (ResourceMissingException ex) {
-            throw new RuntimeException(ex);
-        }
-        Grid<Integer> orcImage;
-        try {
-            orcImage = imageLoader.loadImage(this.getClass(), "orc_priest.bmp");
-        } catch (ResourceMissingException ex) {
-            throw new RuntimeException(ex);
-        }
-        while (!ready) {
-            term.clear(new TerminalCell(null, 0xFF000000, 0xFFaaaaaa));
-            SingleLine.applyTemplate(term, -1, -1, 0, 0,
-                    new TerminalCellTemplate(new WoodGrain(gradient)));
-            Images.imageToSequence(term, 0,
-                    (term.getWidth() - imageColors.getWidth()) / 2, image, null);
-            Images.imageToBackground(term, 0,
-                    (term.getWidth() - imageColors.getWidth()) / 2, imageColors, 0);
-            Images.imageToBackground(term, imageColors.getHeight()-1,
-                    (orcImage.getWidth() / -4) + (term.getWidth() - BASE_WIDTH) / 2, orcImage, 0);
-            // centerOnLine(0, "A Swamp Orc Adventure");
-            int last = term.getHeight() - 1;
-            centerOnLine(image.getHeight(), "Copyright (C) 2012 Steven Black");
-            /*
-            term.mvputs(8, 0, "HOW TO PLAY");
-            term.mvputs(9, 0, "-----------");
-            term.mvputs(10,0, "A representation of a map is shown.  You (the player) are the");
-            term.mvputs(11,0, "at sign (@).  The object is to run around collecting the numbers");
-            term.mvputs(12,0, "in order.  The numbers have walls around them that only open up");
-            term.mvputs(13,0, "if you've collected the previous number.");
-            term.mvputs(15,0, "Use the arrow keys to move around.  There are no opponents.");
-            term.mvputs(last-1, 0, "Press '?' for Help.");
-            alignRight(last-0, "Press any other key to continue.");
-            */
-            int key = BlackenKeys.NO_KEY;
-            while(key == BlackenKeys.NO_KEY) {
-                // This works around an issue with the AWT putting focus someplace weird
-                // if the window is not in focus when it is shown. It only happens on
-                // startup, so a splash screen is the perfect place to fix it.
-                // A normal game might want an animation at such a spot.
-                key = term.getch(200);
-            }
-            // int modifier = BlackenKeys.NO_KEY;
-            if (BlackenKeys.isModifier(key)) {
-                // modifier = key;
-                key = term.getch(); // should be immediate
-            }
-            switch(key) {
-                case BlackenKeys.NO_KEY:
-                case BlackenKeys.RESIZE_EVENT:
-                    // should be safe
-                    break;
-                case 'l':
-                case 'L':
-                    showMyLicense();
-                    break;
-                case 'n':
-                case 'N':
-                    showLegalNotices();
-                    break;
-                case 'f':
-                case 'F':
-                    showFontLicense();
-                    break;
-                case '?':
-                    showHelp();
-                    break;
-                default:
-                    ready = true;
-                    break;
-            }
-        }
-    }
-
-    private void showLegalNotices() {
-        // show Notices file
-        // This is the only one that needs to be shown for normal games.
-        ViewerHelper vh;
-        vh = new ViewerHelper(term, "Legal Notices", Obligations.getBlackenNotice());
-        vh.setColor(7, 0);
-        vh.run();
-    }
-
-    private void showFontLicense() {
-        // show the font license
-        ViewerHelper vh;
-        new ViewerHelper(term,
-                Obligations.getFontName() + " Font License",
-                Obligations.getFontLicense()).run();
-    }
-
-    private void showHelp() {
-        ViewerHelper vh;
-        vh = new ViewerHelper(term, "Help", helpMessage);
-        vh.setColor(7, 0);
-        vh.run();
-    }
-
-    private void showMyLicense() {
-        // show Apache 2.0 License
-        ViewerHelper vh;
-        vh = new ViewerHelper(term, "License", Obligations.getBlackenLicense());
-        vh.setColor(7, 0);
-        vh.run();
-    }
 }
