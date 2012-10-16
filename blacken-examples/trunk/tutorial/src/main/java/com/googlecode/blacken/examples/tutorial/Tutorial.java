@@ -16,27 +16,19 @@
 package com.googlecode.blacken.examples.tutorial;
 
 import com.googlecode.blacken.bsp.BSPTree;
-import com.googlecode.blacken.colors.ColorHelper;
 import com.googlecode.blacken.colors.ColorNames;
 import com.googlecode.blacken.colors.ColorPalette;
-import com.googlecode.blacken.core.Obligations;
 import com.googlecode.blacken.core.Random;
 import com.googlecode.blacken.dungeon.Room;
 import com.googlecode.blacken.dungeon.SimpleDigger;
-import com.googlecode.blacken.exceptions.InvalidStringFormatException;
-import com.googlecode.blacken.extras.PerlinNoise;
 import com.googlecode.blacken.grid.Grid;
 import com.googlecode.blacken.grid.Point;
 import com.googlecode.blacken.grid.Positionable;
 import com.googlecode.blacken.grid.SimpleSize;
-import com.googlecode.blacken.resources.ResourceMissingException;
 import com.googlecode.blacken.swing.SwingTerminal;
 import com.googlecode.blacken.terminal.*;
-import com.googlecode.blacken.terminal.editing.Images;
-import com.googlecode.blacken.terminal.editing.SingleLine;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -478,7 +470,7 @@ public class Tutorial {
         */
     }
 
-    private void refreshScreen() {
+    private void redraw() {
         term.clear();
         updateStatus();
         updateMessage(false);
@@ -491,7 +483,7 @@ public class Tutorial {
             case 'l':
             case 'L':
                 this.recenterMap();
-                refreshScreen();
+                redraw();
                 break;
             }
             return false;
@@ -539,20 +531,20 @@ public class Tutorial {
                 this.quit = true;
                 return false;
             case 'L':
-                helpSystem.myLicense();
-                refreshScreen();
+                HelpSystem.blackenLicense(term);
+                redraw();
                 break;
             case 'N':
-                helpSystem.legalNotices();
-                refreshScreen();
+                HelpSystem.legalNotices(term);
+                redraw();
                 break;
             case 'F':
-                helpSystem.fontLicense();
-                refreshScreen();
+                HelpSystem.fontLicense(term);
+                redraw();
                 break;
             case '?':
-                helpSystem.help();
-                refreshScreen();
+                HelpSystem.help(term);
+                redraw();
                 break;
             default:
                 return false;
@@ -629,6 +621,7 @@ public class Tutorial {
     public void init(TerminalInterface term, ColorPalette palette) {
         if (term == null) {
             term = new SwingTerminal();
+            term.setSize(TerminalScreenSize.SIZE_TINY);
             term.init("Blacken Example: Swamp Orc Adventure", BASE_HEIGHT, BASE_WIDTH);
         }
         this.term = term;
@@ -651,6 +644,13 @@ public class Tutorial {
         SplashScreen screen = new SplashScreen(that.term, 
                 new SimpleSize(BASE_HEIGHT, BASE_WIDTH));
         screen.run();
+        screen.handleResizeEvent();
+        ConfirmationDialog confirm = new ConfirmationDialog(that.term,
+                screen, "Are you sure you want to quit?", "No", "Yes");
+        confirm.setColor(0xFFaaaaaa, 0xFF222299);
+        confirm.run();
+        String got = confirm.getCurrentOptionText();
+        LOGGER.error("Confirmation dialog returned: {}", got);
         that.loop();
         that.quit();
     }

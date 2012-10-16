@@ -18,11 +18,14 @@ package com.googlecode.blacken.examples.tutorial;
 
 import com.googlecode.blacken.colors.ColorHelper;
 import com.googlecode.blacken.colors.ColorPalette;
+import com.googlecode.blacken.grid.BoxRegion;
 import com.googlecode.blacken.grid.Point;
+import com.googlecode.blacken.terminal.BlackenCodePoints;
 import com.googlecode.blacken.terminal.BlackenEventType;
+import com.googlecode.blacken.terminal.BlackenKeys;
+import com.googlecode.blacken.terminal.BlackenModifier;
 import com.googlecode.blacken.terminal.BlackenMouseEvent;
 import com.googlecode.blacken.terminal.BlackenWindowEvent;
-import com.googlecode.blacken.terminal.CellWalls;
 import com.googlecode.blacken.terminal.TerminalCellTemplate;
 import com.googlecode.blacken.terminal.TerminalInterface;
 import com.googlecode.blacken.terminal.TerminalView;
@@ -30,49 +33,124 @@ import com.googlecode.blacken.terminal.TerminalViewInterface;
 import com.googlecode.blacken.terminal.editing.CodepointCallbackInterface;
 import com.googlecode.blacken.terminal.editing.SingleLine;
 import com.googlecode.blacken.terminal.editing.StringViewer;
+import com.googlecode.blacken.terminal.utils.TerminalUtils;
+import com.googlecode.blacken.terminal.widgets.Box;
 import java.util.EnumSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Steven Black
  */
 public class ViewerHelper implements CodepointCallbackInterface {
-    private TerminalInterface term;
-    private TerminalViewInterface view;
-    private StringViewer viewer;
-    private TerminalViewInterface helpView;
-    private StringViewer helpViewer;
-    private String title;
-    String helpMessage =
+    private static final Logger LOGGER = LoggerFactory.getLogger(ViewerHelper.class);
+    private TerminalInterface term = null;
+    private TerminalViewInterface view = null;
+    private StringViewer viewer = null;
+    private TerminalViewInterface helpView = null;
+    private StringViewer helpViewer = null;
+    private String title = null;
+    private String helpMessage =
             "Q / q : quit this viewer; " +
             "PageUp / PageDown : Next or previous page";
-    private TerminalCellTemplate template;
-    private TerminalCellTemplate messageTemplate;
+    private TerminalCellTemplate template = null;
+    private TerminalCellTemplate messageTemplate = null;
+    private String message = null;
+    private EnumSet<BlackenModifier> lastModifiers;
+    private CodepointCallbackInterface secondaryCallback = null;
+    private boolean useDefaultTemplate = true;
+
+    public ViewerHelper() {
+    }
 
     public ViewerHelper(TerminalInterface term, String title, String message) {
+        internalSetup(term, title, message);
+    }
+
+    public void setup(TerminalInterface term, String title, String message) {
+        internalSetup(term, title, message);
+    }
+
+    private void internalSetup(TerminalInterface term, String title, String message) {
         this.title = title;
-        this.term = term;
-        view = new TerminalView(term);
-        viewer = new StringViewer(view, message, this);
-        helpView = new TerminalView(term);
-        helpViewer = new StringViewer(helpView, helpMessage, null);
+        if (term != null) {
+            internalSetTerm(term);
+            internalDefaultTemplate();
+        }
+        this.message = message;
+    }
+
+    private void internalDefaultTemplate() {
         int background = term.getEmpty().getBackground();
         int foreground = ColorHelper.makeVisible(background);
         template = new TerminalCellTemplate();
         template.setBackground(background);
         template.setForeground(foreground);
+        template.clearCellWalls();
+        template.clearStyle();
     }
+    private void internalSetTerm(TerminalInterface term) {
+        if (term == null) {
+            this.term = null;
+            this.view = null;
+            this.viewer = null;
+            this.helpView = null;
+            this.helpViewer = null;
+            if (useDefaultTemplate) {
+                this.template = null;
+            }
+            return;
+        }
+        this.term = term;
+        if (useDefaultTemplate) {
+            internalDefaultTemplate();
+        }
+        view = new TerminalView(term);
+        viewer = new StringViewer(view, this.message, this);
+        helpView = new TerminalView(term);
+        helpViewer = new StringViewer(helpView, helpMessage, this);
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+        if (this.term != null) {
+            viewer.setMessage(this.message);
+            viewer.handleResizeEvent();
+            viewer.step();
+        }
+    }
+
     public void setColor(TerminalCellTemplate template) {
         if (template == null) {
-            throw new NullPointerException("template cannot be null");
+            this.useDefaultTemplate = true;
+            return;
         }
+        this.useDefaultTemplate = false;
         template = new TerminalCellTemplate(template);
         this.template = template;
+        try {
+            if (template.getCellWalls() == null) {
+                template.clearCellWalls();
+            }
+        } catch(NullPointerException ex) {
+            template.clearCellWalls();
+        }
+        try {
+            if (template.getStyle() == null) {
+                template.clearStyle();
+            }
+        } catch(NullPointerException ex) {
+            template.clearStyle();
+        }
     }
     public void setColor(int foreground, int background) {
         template = new TerminalCellTemplate();
         template.setBackground(background);
         template.setForeground(foreground);
+        template.clearCellWalls();
+        template.clearStyle();
+        this.useDefaultTemplate = false;
     }
     public void setColor(String foreground, String background) {
         ColorPalette palette = term.getBackingTerminal().getPalette();
@@ -106,34 +184,73 @@ public class ViewerHelper implements CodepointCallbackInterface {
         setMessageColor(fg, bg);
     }
 
+    public void setTerm(TerminalInterface term) {
+        internalSetTerm(term);
+    }
+
     public void run() {
+        if (this.term == null) {
+            throw new NullPointerException("Cannot run with a null terminal");
+        }
         EnumSet<BlackenEventType> oldNotices = term.getEventNotices();
         term.setEventNotices(EnumSet.of(BlackenEventType.MOUSE_WHEEL));
-        displayFrame();
         viewer.setColor(messageTemplate);
+        redraw();
         viewer.run();
         term.setEventNotices(oldNotices);
+    }
+    public void redraw() {
+        term.clear();
+        displayFrame();
+        viewer.step();
     }
 
     @Override
     public int handleCodepoint(int codepoint) {
+        //LOGGER.debug("Found codepoint: {}", BlackenCodePoints.getCodepointName(codepoint));
+        if (this.secondaryCallback != null) {
+            codepoint = secondaryCallback.handleCodepoint(codepoint);
+        }
+        if (BlackenKeys.isModifier(codepoint)) {
+            this.lastModifiers = BlackenModifier.getAsSet(codepoint);
+            return codepoint;
+        }
+        switch (codepoint) {
+            case 'l':
+            case 'L':
+                if (lastModifiers != null && lastModifiers.contains(BlackenModifier.MODIFIER_KEY_CTRL)) {
+                    redraw();
+                }
+                break;
+        }
+        lastModifiers = null;
         return codepoint;
     }
 
     @Override
     public boolean handleMouseEvent(BlackenMouseEvent mouse) {
-        return false;
+        boolean ret = false;
+        if (this.secondaryCallback != null) {
+            ret = secondaryCallback.handleMouseEvent(mouse);
+        }
+        return ret;
     }
 
     @Override
     public boolean handleWindowEvent(BlackenWindowEvent window) {
-        return false;
+        boolean ret = false;
+        if (this.secondaryCallback != null) {
+            ret = secondaryCallback.handleWindowEvent(window);
+        }
+        return ret;
     }
 
     @Override
     public void handleResizeEvent() {
-        term.clear();
-        displayFrame();
+        if (this.secondaryCallback != null) {
+            secondaryCallback.handleResizeEvent();
+        }
+        redraw();
     }
 
     public void centerOnLine(int y, String string, TerminalCellTemplate tmplate) {
@@ -142,26 +259,35 @@ public class ViewerHelper implements CodepointCallbackInterface {
     }
 
     private void displayFrame() {
-        centerOnLine(0, title, template);
+        if (title != null) {
+            centerOnLine(0, title, template);
+        }
         view.setBounds(term.getHeight()-1-helpViewer.getLines(), term.getWidth()-2, 1, 1);
         helpView.setBounds(helpViewer.getLines(), term.getWidth(), term.getHeight()-helpViewer.getLines(), 0);
 
-        SingleLine.applyTemplate(term, template);
-        SingleLine.applyTemplate(view, messageTemplate);
+        TerminalUtils.applyTemplate(term, template);
+        TerminalUtils.applyTemplate(view, messageTemplate);
 
         helpViewer.setColor(template);
         helpViewer.step();
 
-        for (int x = 1; x < term.getWidth()-1; x++) {
-            term.set(0, x, null, null, null, null,
-                    EnumSet.of(CellWalls.BOTTOM));
-            term.set(term.getHeight()-helpViewer.getLines(), x, 
-                    null, null, null, null, EnumSet.of(CellWalls.TOP));
-        }
-        for (int y = 1; y < term.getHeight()-helpViewer.getLines(); y++) {
-            term.set(y, 0, null, null, null, null, EnumSet.of(CellWalls.RIGHT));
-            term.set(y, term.getWidth()-1, null, null, null, null, EnumSet.of(CellWalls.LEFT));
-        }
+        Box.box(term, Box.BoxMethod.INSIDE_WALL, BoxRegion.inset(view.getBounds(), -1, -1));
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public CodepointCallbackInterface getSecondaryCallback() {
+        return secondaryCallback;
+    }
+
+    public void setSecondaryCallback(CodepointCallbackInterface secondaryCallback) {
+        this.secondaryCallback = secondaryCallback;
     }
 
 }

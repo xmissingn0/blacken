@@ -20,6 +20,7 @@ import com.googlecode.blacken.colors.ColorHelper;
 import com.googlecode.blacken.colors.ColorPalette;
 import com.googlecode.blacken.grid.Grid;
 import com.googlecode.blacken.grid.Point;
+import com.googlecode.blacken.grid.Regionlike;
 import com.googlecode.blacken.grid.Sizable;
 import com.googlecode.blacken.resources.ResourceMissingException;
 import com.googlecode.blacken.terminal.BlackenEventType;
@@ -37,6 +38,7 @@ import com.googlecode.blacken.terminal.editing.CodepointCallbackInterface;
 import com.googlecode.blacken.terminal.editing.Images;
 import com.googlecode.blacken.terminal.editing.SingleLine;
 import com.googlecode.blacken.terminal.editing.Steppable;
+import com.googlecode.blacken.terminal.utils.TerminalUtils;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -53,7 +55,7 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
     private Grid<Integer> imageColors;
     private Grid<Integer> orcImage;
     private Sizable base;
-    private boolean quit;
+    private boolean complete;
     private int startIndex;
     private int modifier = BlackenKeys.NO_KEY;
 
@@ -63,7 +65,7 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
         setup();
     }
     public void run() {
-        this.quit = false;
+        this.complete = false;
         EnumSet<BlackenEventType> oldNotices = term.getEventNotices();
         term.setEventNotices(EnumSet.of(BlackenEventType.MOUSE_CLICKED));
         ColorPalette oldPalette = term.getPalette();
@@ -75,7 +77,7 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
         for (int i = 0; i < gradientColors.size(); i++) {
             gradient.add(i + startIndex);
         }
-        redisplay();
+        redraw();
         loop();
         term.setEventNotices(oldNotices);
         term.setPalette(oldPalette);
@@ -94,25 +96,25 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
             break;
         case 'l':
         case 'L':
-            HelpSystem.myLicense(term);
-            this.redisplay();
+            HelpSystem.blackenLicense(term);
+            this.redraw();
             break;
         case 'n':
         case 'N':
             HelpSystem.legalNotices(term);
-            this.redisplay();
+            this.redraw();
             break;
         case 'f':
         case 'F':
             HelpSystem.fontLicense(term);
-            this.redisplay();
+            this.redraw();
             break;
         case '?':
             HelpSystem.help(term);
-            this.redisplay();
+            this.redraw();
             break;
         default:
-            this.quit = true;
+            this.complete = true;
             codepoint = BlackenKeys.CMD_END_LOOP;
             break;
         }
@@ -122,18 +124,13 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
 
     @Override
     public boolean handleMouseEvent(BlackenMouseEvent mouse) {
-        this.quit = true;
+        this.complete = true;
         return true;
     }
 
     @Override
     public boolean handleWindowEvent(BlackenWindowEvent window) {
         return false;
-    }
-
-    @Override
-    public void handleResizeEvent() {
-        this.redisplay();
     }
 
     private void setup() {
@@ -157,11 +154,15 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
         }
     }
 
-    private void redisplay() {
+    private void redraw() {
+        WoodGrain grain = null;
+        if (!this.complete) {
+            grain = new WoodGrain(gradient);
+        }
         TerminalCellTemplate clearCell = new TerminalCellTemplate(
-                new WoodGrain(gradient), " ", 0xFF000000, null,
+                grain, " ", 0xFF000000, 0xFFaaaaaa,
                 EnumSet.noneOf(TerminalStyle.class), EnumSet.noneOf(CellWalls.class));
-        SingleLine.applyTemplate(term, clearCell);
+        TerminalUtils.applyTemplate(term, clearCell);
         Images.imageToSequence(term, 0,
                 (term.getWidth() - imageColors.getWidth()) / 2, image, null);
         Images.imageToBackground(term, 0,
@@ -171,7 +172,7 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
                 + (term.getWidth() - base.getWidth()) / 2, orcImage, 0);
         TerminalCellTemplate template = new TerminalCellTemplate(null, 0xFF000000, null);
         SingleLine.putString(term, 
-                new Point(image.getHeight() - 1, term.getWidth()/2),
+                new Point(image.getHeight(), term.getWidth()/2),
                 null, "Copyright (C) 2012 Steven Black", template,
                 Alignment.CENTER);
         int postOrc = orcImage.getWidth()
@@ -204,14 +205,21 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
 
     @Override
     public void step() {
-        term.getPalette().rotate(startIndex, gradient.size(), +1);
-        Images.refreshForColors(gradient, term);
+        if (!this.complete) {
+            term.getPalette().rotate(startIndex, gradient.size(), +1);
+            Images.refreshForColors(gradient, term);
+        }
         term.doUpdate();
     }
 
     @Override
     public boolean isComplete() {
-        return this.quit;
+        return this.complete;
+    }
+
+    @Override
+    public void handleResizeEvent() {
+        this.redraw();
     }
 
 }
