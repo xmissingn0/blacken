@@ -239,7 +239,7 @@ public class HelpSystem implements CodepointCallbackInterface {
         ModifiedKey mk = new ModifiedKey(lastModifiers, codepoint);
         String titleCheck = keymap.get(mk);
         if (titleCheck != null) {
-            LOGGER.debug("Checking {} found {}", mk, titleCheck);
+            // LOGGER.debug("Checking {} found {}", mk, titleCheck);
             this.switchHelpText(titleCheck);
             codepoint = BlackenKeys.NO_KEY;
             vh.redraw();

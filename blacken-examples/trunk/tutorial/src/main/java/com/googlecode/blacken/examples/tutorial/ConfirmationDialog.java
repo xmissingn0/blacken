@@ -56,9 +56,9 @@ public class ConfirmationDialog implements Steppable, CodepointCallbackInterface
     private int currentOption = -1;
     private StringViewer messageViewer;
     private boolean complete;
-    private int lastModifier = BlackenKeys.NO_KEY;
     private Integer cancelIndex = null;
     private boolean squelchBox;
+    private EnumSet<BlackenModifier> lastModifiers = EnumSet.noneOf(BlackenModifier.class);
 
     ConfirmationDialog(TerminalViewInterface term, 
             CodepointCallbackInterface backer, String message, 
@@ -171,96 +171,95 @@ public class ConfirmationDialog implements Steppable, CodepointCallbackInterface
     @Override
     public int handleCodepoint(int codepoint) {
         if (BlackenKeys.isModifier(codepoint)) {
-            this.lastModifier = codepoint;
+            this.lastModifiers = BlackenModifier.getAsSet(codepoint);
             return codepoint;
         }
-        EnumSet<BlackenModifier> modStates;
-        modStates = BlackenModifier.getAsSet(lastModifier);
-        int modifierSelection = 0;
-        if (modStates.contains(BlackenModifier.MODIFIER_KEY_SHIFT)) {
-            modifierSelection += 10;
-        }
-        if (modStates.contains(BlackenModifier.MODIFIER_KEY_CTRL)) {
-            modifierSelection += 20;
-        }
-        if (modStates.contains(BlackenModifier.MODIFIER_KEY_ALT)) {
-            modifierSelection += 40;
-        }
-        switch (codepoint) {
-        case BlackenKeys.KEY_ESCAPE:
-        case BlackenKeys.KEY_CANCEL:
-            if (this.cancelIndex != null) {
-                this.currentOption = this.cancelIndex;
+        try {
+            int modifierSelection = 0;
+            if (lastModifiers.contains(BlackenModifier.MODIFIER_KEY_SHIFT)) {
+                modifierSelection += 10;
+            }
+            if (lastModifiers.contains(BlackenModifier.MODIFIER_KEY_CTRL)) {
+                modifierSelection += 20;
+            }
+            if (lastModifiers.contains(BlackenModifier.MODIFIER_KEY_ALT)) {
+                modifierSelection += 40;
+            }
+            switch (codepoint) {
+            case BlackenKeys.KEY_ESCAPE:
+            case BlackenKeys.KEY_CANCEL:
+                if (this.cancelIndex != null) {
+                    this.currentOption = this.cancelIndex;
+                    this.complete = true;
+                    return BlackenKeys.CMD_END_LOOP;
+                }
+                break;
+            case BlackenKeys.KEY_NP_1:
+            case '1':
+                this.setCurrentOption(0 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_2:
+            case '2':
+                this.setCurrentOption(1 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_3:
+            case '3':
+                this.setCurrentOption(2 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_4:
+            case '4':
+                this.setCurrentOption(3 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_5:
+            case '5':
+                this.setCurrentOption(4 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_6:
+            case '6':
+                this.setCurrentOption(5 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_7:
+            case '7':
+                this.setCurrentOption(6 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_8:
+            case '8':
+                this.setCurrentOption(7 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_9:
+            case '9':
+                this.setCurrentOption(8 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_0:
+            case '0':
+                this.setCurrentOption(9 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_LEFT:
+            case BlackenKeys.KEY_KP_LEFT:
+                if (currentOption > 0) {
+                    this.setCurrentOption(currentOption - 1);
+                } else {
+                    this.setCurrentOption(options.length -1);
+                }
+                break;
+            case BlackenKeys.KEY_RIGHT:
+            case BlackenKeys.KEY_KP_RIGHT:
+                if (currentOption < options.length - 1) {
+                    this.setCurrentOption(currentOption + 1);
+                } else {
+                    this.setCurrentOption(0);
+                }
+                break;
+            case BlackenKeys.KEY_ENTER:
+            case BlackenKeys.KEY_NP_ENTER:
                 this.complete = true;
-                return BlackenKeys.CMD_END_LOOP;
+                break;
+            default:
+                return codepoint;
             }
-            break;
-        case BlackenKeys.KEY_NP_1:
-        case '1':
-            this.setCurrentOption(0 + modifierSelection);
-            break;
-        case BlackenKeys.KEY_NP_2:
-        case '2':
-            this.setCurrentOption(1 + modifierSelection);
-            break;
-        case BlackenKeys.KEY_NP_3:
-        case '3':
-            this.setCurrentOption(2 + modifierSelection);
-            break;
-        case BlackenKeys.KEY_NP_4:
-        case '4':
-            this.setCurrentOption(3 + modifierSelection);
-            break;
-        case BlackenKeys.KEY_NP_5:
-        case '5':
-            this.setCurrentOption(4 + modifierSelection);
-            break;
-        case BlackenKeys.KEY_NP_6:
-        case '6':
-            this.setCurrentOption(5 + modifierSelection);
-            break;
-        case BlackenKeys.KEY_NP_7:
-        case '7':
-            this.setCurrentOption(6 + modifierSelection);
-            break;
-        case BlackenKeys.KEY_NP_8:
-        case '8':
-            this.setCurrentOption(7 + modifierSelection);
-            break;
-        case BlackenKeys.KEY_NP_9:
-        case '9':
-            this.setCurrentOption(8 + modifierSelection);
-            break;
-        case BlackenKeys.KEY_NP_0:
-        case '0':
-            this.setCurrentOption(9 + modifierSelection);
-            break;
-        case BlackenKeys.KEY_LEFT:
-        case BlackenKeys.KEY_KP_LEFT:
-            if (currentOption > 0) {
-                this.setCurrentOption(currentOption - 1);
-            } else {
-                this.setCurrentOption(options.length -1);
-            }
-            break;
-        case BlackenKeys.KEY_RIGHT:
-        case BlackenKeys.KEY_KP_RIGHT:
-            if (currentOption < options.length - 1) {
-                this.setCurrentOption(currentOption + 1);
-            } else {
-                this.setCurrentOption(0);
-            }
-            break;
-        case BlackenKeys.KEY_ENTER:
-        case BlackenKeys.KEY_NP_ENTER:
-            this.complete = true;
-            codepoint = BlackenKeys.CMD_END_LOOP;
-            break;
-        default:
-            lastModifier = BlackenKeys.NO_KEY;
-            return codepoint;
+        } finally {
+            lastModifiers = EnumSet.noneOf(BlackenModifier.class);
         }
-        lastModifier = BlackenKeys.NO_KEY;
         return BlackenKeys.NO_KEY;
     }
 

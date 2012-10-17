@@ -16,6 +16,7 @@
 
 package com.googlecode.blacken.examples.tutorial;
 
+import com.googlecode.blacken.core.Random;
 import com.googlecode.blacken.extras.PerlinNoise;
 import com.googlecode.blacken.grid.Regionlike;
 import com.googlecode.blacken.terminal.TerminalCellLike;
@@ -26,21 +27,25 @@ import java.util.List;
  *
  * @author Steven Black
  */
-public class WoodGrain implements TerminalCellTransformer {
+public class DripTexture implements TerminalCellTransformer {
     private final List<Integer> palette;
+    private final int maxIndex;
+    static final float z = Random.getInstance().nextFloat();
 
-    public WoodGrain(List<Integer> palette) {
+    public DripTexture(List<Integer> palette) {
         this.palette = palette;
+        maxIndex = palette.size();
     }
 
     @Override
     public boolean transform(TerminalCellLike cell, Regionlike bounds, int y, int x) {
-        double n = PerlinNoise.noise(x, y / (palette.size() * 1.5));
-        n *= palette.size() - 1;
-        if (n < 0) {
-            n += palette.size() - 1;
+        double n = PerlinNoise.fbmNoise(5, x, 1, z);
+
+        int index = ((int)(n * maxIndex) - y) % palette.size();
+        if (index < 0) {
+            index += palette.size();
         }
-        cell.setBackground(palette.get((int)n));
+        cell.setBackground(palette.get(index));
         return true;
     }
 

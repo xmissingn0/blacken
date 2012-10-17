@@ -20,6 +20,7 @@ import com.googlecode.blacken.colors.ColorHelper;
 import com.googlecode.blacken.colors.ColorPalette;
 import com.googlecode.blacken.grid.BoxRegion;
 import com.googlecode.blacken.grid.Point;
+import com.googlecode.blacken.grid.Regionlike;
 import com.googlecode.blacken.terminal.BlackenCodePoints;
 import com.googlecode.blacken.terminal.BlackenEventType;
 import com.googlecode.blacken.terminal.BlackenKeys;
@@ -45,7 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ViewerHelper implements CodepointCallbackInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(ViewerHelper.class);
-    private TerminalInterface term = null;
+    private TerminalViewInterface term = null;
     private TerminalViewInterface view = null;
     private StringViewer viewer = null;
     private TerminalViewInterface helpView = null;
@@ -60,19 +61,20 @@ public class ViewerHelper implements CodepointCallbackInterface {
     private EnumSet<BlackenModifier> lastModifiers;
     private CodepointCallbackInterface secondaryCallback = null;
     private boolean useDefaultTemplate = true;
+    private boolean saveMenuSpace = false;
 
     public ViewerHelper() {
     }
 
-    public ViewerHelper(TerminalInterface term, String title, String message) {
+    public ViewerHelper(TerminalViewInterface term, String title, String message) {
         internalSetup(term, title, message);
     }
 
-    public void setup(TerminalInterface term, String title, String message) {
+    public void setup(TerminalViewInterface term, String title, String message) {
         internalSetup(term, title, message);
     }
 
-    private void internalSetup(TerminalInterface term, String title, String message) {
+    private void internalSetup(TerminalViewInterface term, String title, String message) {
         this.title = title;
         if (term != null) {
             internalSetTerm(term);
@@ -90,7 +92,7 @@ public class ViewerHelper implements CodepointCallbackInterface {
         template.clearCellWalls();
         template.clearStyle();
     }
-    private void internalSetTerm(TerminalInterface term) {
+    private void internalSetTerm(TerminalViewInterface term) {
         if (term == null) {
             this.term = null;
             this.view = null;
@@ -107,6 +109,9 @@ public class ViewerHelper implements CodepointCallbackInterface {
             internalDefaultTemplate();
         }
         view = new TerminalView(term);
+        if (this.message == null) {
+            this.message = "";
+        }
         viewer = new StringViewer(view, this.message, this);
         helpView = new TerminalView(term);
         helpViewer = new StringViewer(helpView, helpMessage, this);
@@ -128,6 +133,7 @@ public class ViewerHelper implements CodepointCallbackInterface {
         }
         this.useDefaultTemplate = false;
         template = new TerminalCellTemplate(template);
+        template.setSequence("");
         this.template = template;
         try {
             if (template.getCellWalls() == null) {
@@ -168,12 +174,8 @@ public class ViewerHelper implements CodepointCallbackInterface {
             throw new NullPointerException("template cannot be null");
         }
         template = new TerminalCellTemplate(template);
-        try {
-            if (template.getSequence() == null) {
-                template.setSequence(" ");
-            }
-        } catch(NullPointerException ex) {
-            template.setSequence(" ");
+        if (template.isSequenceUnset()) {
+            template.setSequence("");
         }
         this.messageTemplate = template;
     }
@@ -192,14 +194,16 @@ public class ViewerHelper implements CodepointCallbackInterface {
         if (this.term == null) {
             throw new NullPointerException("Cannot run with a null terminal");
         }
-        EnumSet<BlackenEventType> oldNotices = term.getEventNotices();
-        term.setEventNotices(EnumSet.of(BlackenEventType.MOUSE_WHEEL));
+        TerminalInterface realTerm = term.getBackingTerminal();
+        EnumSet<BlackenEventType> oldNotices = realTerm.getEventNotices();
+        realTerm.setEventNotices(EnumSet.of(BlackenEventType.MOUSE_WHEEL));
         viewer.setColor(messageTemplate);
         redraw();
         viewer.run();
-        term.setEventNotices(oldNotices);
+        realTerm.setEventNotices(oldNotices);
     }
     public void redraw() {
+        reposition();
         term.clear();
         displayFrame();
         viewer.step();
@@ -258,12 +262,24 @@ public class ViewerHelper implements CodepointCallbackInterface {
         SingleLine.putString(term, new Point(y, offset), null, string, tmplate);
     }
 
+    private void reposition() {
+        if (this.saveMenuSpace) {
+            Regionlike realBounds = term.getBackingTerminal().getBounds();
+            if (term.getBackingTerminal() == term) {
+                term = new TerminalView(term);
+            }
+            term.setBounds(realBounds.getHeight()-1, realBounds.getWidth(), 1, 0);
+        } else {
+            term = term.getBackingTerminal();
+        }
+        view.setBounds(term.getHeight()-1-helpViewer.getLines(), term.getWidth()-2, 1+term.getY(), 1);
+        helpView.setBounds(helpViewer.getLines(), term.getWidth() - 2, term.getHeight()-helpViewer.getLines()+term.getY(), 1);
+    }
+
     private void displayFrame() {
         if (title != null) {
             centerOnLine(0, title, template);
         }
-        view.setBounds(term.getHeight()-1-helpViewer.getLines(), term.getWidth()-2, 1, 1);
-        helpView.setBounds(helpViewer.getLines(), term.getWidth(), term.getHeight()-helpViewer.getLines(), 0);
 
         TerminalUtils.applyTemplate(term, template);
         TerminalUtils.applyTemplate(view, messageTemplate);
@@ -288,6 +304,14 @@ public class ViewerHelper implements CodepointCallbackInterface {
 
     public void setSecondaryCallback(CodepointCallbackInterface secondaryCallback) {
         this.secondaryCallback = secondaryCallback;
+    }
+
+    public boolean hasMenuSpace() {
+        return saveMenuSpace;
+    }
+
+    public void setMenuSpace(boolean saveMenuSpace) {
+        this.saveMenuSpace = saveMenuSpace;
     }
 
 }

@@ -621,7 +621,6 @@ public class Tutorial {
     public void init(TerminalInterface term, ColorPalette palette) {
         if (term == null) {
             term = new SwingTerminal();
-            term.setSize(TerminalScreenSize.SIZE_TINY);
             term.init("Blacken Example: Swamp Orc Adventure", BASE_HEIGHT, BASE_WIDTH);
         }
         this.term = term;
@@ -651,6 +650,13 @@ public class Tutorial {
         confirm.run();
         String got = confirm.getCurrentOptionText();
         LOGGER.error("Confirmation dialog returned: {}", got);
+        if ("No".equals(got)) {
+            GameOver over = new GameOver(that.term,
+                    new SimpleSize(BASE_HEIGHT, BASE_WIDTH));
+            over.addText("Details", "You have died.");
+            over.addText("Furthermore", "You died foolishly.");
+            over.run();
+        }
         that.loop();
         that.quit();
     }
