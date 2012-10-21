@@ -54,13 +54,11 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
     private Grid<Integer> image;
     private Grid<Integer> imageColors;
     private Grid<Integer> orcImage;
-    private Sizable base;
     private boolean complete;
     private int startIndex;
     private int modifier = BlackenKeys.NO_KEY;
 
-    public SplashScreen(TerminalInterface term, Sizable base) {
-        this.base = base;
+    public SplashScreen(TerminalInterface term) {
         this.term = term;
         setup();
     }
@@ -169,7 +167,7 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
                 (term.getWidth() - imageColors.getWidth()) / 2, imageColors, 0);
         Images.imageToBackground(term, imageColors.getHeight()-1,
                 (orcImage.getWidth() / -4) 
-                + (term.getWidth() - base.getWidth()) / 2, orcImage, 0);
+                + (term.getWidth() - 80) / 2, orcImage, 0);
         TerminalCellTemplate template = new TerminalCellTemplate(null, 0xFF000000, null);
         SingleLine.putString(term, 
                 new Point(image.getHeight(), term.getWidth()/2),
@@ -177,7 +175,7 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
                 Alignment.CENTER);
         int postOrc = orcImage.getWidth()
                 + ((orcImage.getWidth() / -4)
-                    + (term.getWidth() - base.getWidth()) / 2);
+                    + (term.getWidth() - 80) / 2);
         int postOrcSize = term.getWidth() - postOrc;
         Point last = new Point(term.getHeight() - 2, postOrc + postOrcSize / 2);
         SingleLine.putString(term, last, null,

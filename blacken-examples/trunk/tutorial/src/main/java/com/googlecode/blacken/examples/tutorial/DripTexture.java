@@ -39,6 +39,9 @@ public class DripTexture implements TerminalCellTransformer {
 
     @Override
     public boolean transform(TerminalCellLike cell, Regionlike bounds, int y, int x) {
+        if (palette.isEmpty()) {
+            return false;
+        }
         double n = PerlinNoise.fbmNoise(5, x, 1, z);
 
         int index = ((int)(n * maxIndex) - y) % palette.size();

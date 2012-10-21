@@ -19,7 +19,7 @@ function name. IDEs will crop the documentation -- it is easy to see the full
 thing, but, if there are a couple variations of a function you need to be clear
 about the differences up front so the right function can be picked quickly.
 
-Extending the code  is a matter of structure and reuse. Well structured code
+Extending the code is a matter of structure and reuse. Well structured code
 is easy to reuse. There are techniques that are supposed to assist, but
 everything is dependant upon a well-structured API.
 

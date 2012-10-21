@@ -54,68 +54,85 @@ import org.slf4j.LoggerFactory;
 public class GameOver implements CodepointCallbackInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameOver.class);
     private final TerminalInterface term;
-    private List<Integer> gradientNormalColors = new ArrayList<>();
+    private List<Integer> gradientNormalLostColors = new ArrayList<>();
     private List<Integer> gradientNormal = new ArrayList<>();
     private ViewerHelper vh;
-    private List<Integer> gradientMessageColors = new ArrayList<>();
+    private List<Integer> gradientMessageLostColors = new ArrayList<>();
     private List<Integer> gradientMessage = new ArrayList<>();
     private List<Integer> allGradients = new ArrayList<>();
-    private Sizable base;
     private boolean complete;
-    private int startIndex;
     private List<String> gameTitles = new ArrayList<>();
     private Map<String, String> gameText = new HashMap<>();
-    private int maxLength;
-    private TerminalView messageView;
     private TerminalView buttonView;
     private int currentMessage = 0;
-    private StringViewer messageViewer;
     private EnumSet<BlackenModifier> lastModifiers = EnumSet.noneOf(BlackenModifier.class);
     private TerminalCellTemplate clearCellNormal;
     private TerminalCellTemplate clearCellMessage;
+    private boolean ascension;
+    private List<Integer> gradientNormalWonColors;
+    private ArrayList<Integer> gradientMessageWonColors;
+    private ColorPalette oldPalette;
 
-    public GameOver(TerminalInterface term, Sizable base) {
-        this.base = base;
+    public GameOver(TerminalInterface term) {
         this.term = term;
         setup();
     }
-    private ColorPalette switchPalettes() {
-        ColorPalette newPalette = new ColorPalette(term.getPalette());
-        startIndex = newPalette.size();
+
+    public void setAscension(boolean state) {
+        this.ascension = state;
+    }
+    public boolean getAscension() {
+        return ascension;
+    }
+    private void tweakPalettes() {
+        if (oldPalette == null) {
+            oldPalette = term.getPalette();
+        }
+        fixGradientColors();
+        ColorPalette newPalette = new ColorPalette(oldPalette);
         int offset = newPalette.size();
-        newPalette.addAll(gradientNormalColors);
+        if (ascension) {
+            newPalette.addAll(gradientNormalWonColors);
+        } else {
+            newPalette.addAll(gradientNormalLostColors);
+        }
         gradientNormal.clear();
-        if (gradientNormalColors.isEmpty()) {
+        if (gradientNormalLostColors.isEmpty()) {
             throw new RuntimeException("Need normal gradient colors defined.");
         }
-        for (int i = 0; i < gradientNormalColors.size(); i++) {
+        for (int i = 0; i < gradientNormalLostColors.size(); i++) {
             gradientNormal.add(i + offset);
         }
         offset = newPalette.size();
-        newPalette.addAll(gradientMessageColors);
+        if (ascension) {
+            newPalette.addAll(gradientMessageWonColors);
+        } else {
+            newPalette.addAll(gradientMessageLostColors);
+        }
         gradientMessage.clear();
-        if (gradientMessageColors.isEmpty()) {
+        if (gradientMessageLostColors.isEmpty()) {
             throw new RuntimeException("Need message gradient colors defined.");
         }
-        for (int i = 0; i < gradientMessageColors.size(); i++) {
+        for (int i = 0; i < gradientMessageLostColors.size(); i++) {
             gradientMessage.add(i + offset);
         }
         this.allGradients.clear();
         this.allGradients.addAll(gradientNormal);
         this.allGradients.addAll(gradientMessage);
-        return term.setPalette(newPalette);
+        term.setPalette(newPalette);
+        enableGradient();
     }
     public void run() {
         this.complete = false;
+        this.oldPalette = term.getPalette();
         EnumSet<BlackenEventType> oldNotices = term.getEventNotices();
         term.setEventNotices(EnumSet.of(BlackenEventType.MOUSE_CLICKED));
-        ColorPalette oldPalette = switchPalettes();
-        enableGradient(!complete);
+        tweakPalettes();
         switchMessage(currentMessage);
         redrawButtons();
         loop();
         term.setEventNotices(oldNotices);
-        enableGradient(!complete);
+        tweakPalettes();
         term.setPalette(oldPalette);
     }
 
@@ -160,13 +177,6 @@ public class GameOver implements CodepointCallbackInterface {
     }
 
     private void setup() {
-        this.gradientNormalColors = ColorHelper.createGradient(3, 0xffaa0800, 0xff880100);
-        ColorHelper.extendGradient(gradientNormalColors, 6, 0xff330000);
-        ColorHelper.extendGradient(gradientNormalColors, 30, 0xff000000);
-        this.gradientMessageColors = new ArrayList<>();
-        for (Integer c : gradientNormalColors) {
-            gradientMessageColors.add(ColorHelper.lerp(c, 0xFFcccccc, 0.3f));
-        }
         vh = new ViewerHelper(term, null, null);
         vh.setSecondaryCallback(this);
         vh.setMenuSpace(true);
@@ -174,22 +184,51 @@ public class GameOver implements CodepointCallbackInterface {
         b.setHeight(1);
         buttonView = new TerminalView(term, b);
     }
+    private void fixGradientColors() {
+        this.gradientNormalLostColors = null;
+        this.gradientMessageLostColors = null;
+        this.gradientNormalWonColors = null;
+        this.gradientMessageWonColors = null;
+        if (!complete) {
+            this.gradientNormalLostColors = ColorHelper.createGradient(3, 0xffaa0800, 0xff880100);
+            ColorHelper.extendGradient(gradientNormalLostColors, 6, 0xff330000);
+            ColorHelper.extendGradient(gradientNormalLostColors, term.getHeight()+5, 0xff000000);
+            this.gradientMessageLostColors = new ArrayList<>();
+            for (Integer c : gradientNormalLostColors) {
+                gradientMessageLostColors.add(ColorHelper.lerp(c, 0xFFcccccc, 0.3f));
+            }
+            // The "won" and "lost" colors need to be exactly the same length
+            this.gradientNormalWonColors = new ArrayList<>(gradientMessageLostColors.size());
+            for (int i = 0; i < gradientMessageLostColors.size() -1; i++) {
+                this.gradientNormalWonColors.add(0xffFFFFFF);
+            }
+            this.gradientNormalWonColors.add(0xffFDD017);
+            this.gradientMessageWonColors = new ArrayList<>();
+            for (Integer c : gradientNormalWonColors) {
+                gradientMessageWonColors.add(ColorHelper.lerp(c, 0xFFcccccc, 0.3f));
+            }
+        }
+    }
 
-    private void enableGradient(boolean state) {
-        DripTexture grainNormal = null;
-        DripTexture grainMessage = null;
-        //LOGGER.debug("gradientNormal:{}", gradientNormal);
-        //LOGGER.debug("gradientMessage:{}", gradientMessage);
-        if (state) {
-            grainNormal = new DripTexture(gradientNormal);
-            grainMessage = new DripTexture(gradientMessage);
+    private void enableGradient() {
+        DripTexture dripNormal = null;
+        DripTexture dripMessage = null;
+        if (!complete) {
+            dripNormal = new DripTexture(gradientNormal);
+            dripMessage = new DripTexture(gradientMessage);
         }
         clearCellNormal = new TerminalCellTemplate(
-                grainNormal, "", 0xffaaaaaa, 0xFF000000,
-                EnumSet.noneOf(TerminalStyle.class), EnumSet.noneOf(CellWalls.class));
+                dripNormal, "",
+                ascension ? 0xff000000 : 0xffaaaaaa,
+                ascension ? 0xFFffffff : 0xFF000000,
+                EnumSet.noneOf(TerminalStyle.class),
+                EnumSet.noneOf(CellWalls.class));
         clearCellMessage = new TerminalCellTemplate(
-                grainMessage, "", 0xffaaaaaa, 0xFF000000,
-                EnumSet.noneOf(TerminalStyle.class), EnumSet.noneOf(CellWalls.class));
+                dripMessage, "",
+                ascension ? 0xff000000 : 0xffaaaaaa,
+                ascension ? 0xFFffffff : 0xFF000000,
+                EnumSet.noneOf(TerminalStyle.class),
+                EnumSet.noneOf(CellWalls.class));
         vh.setColor(this.clearCellNormal);
         vh.setMessageColor(this.clearCellMessage);
     }
@@ -200,18 +239,20 @@ public class GameOver implements CodepointCallbackInterface {
 
     private void animate() {
         if (!this.complete) {
-            LOGGER.debug("Starting color: {}", term.getBackingTerminal().getPalette().get(gradientNormal.get(0)));
+            LOGGER.debug("Gradient size? {}", gradientNormal.size());
+            // LOGGER.debug("Starting color: {}", term.getBackingTerminal().getPalette().get(gradientNormal.get(0)));
             term.getPalette().rotate(gradientNormal.get(0),
-                                     gradientNormal.size(), +1);
+                                     gradientNormal.size(), ascension ? -1 : +1);
             term.getPalette().rotate(gradientMessage.get(0),
-                                     gradientMessage.size(), +1);
+                                     gradientMessage.size(), ascension ? -1 : +1);
             Images.refreshForColors(allGradients, term.getBackingTerminal());
+            term.doUpdate();
         }
-        term.doUpdate();
     }
 
     @Override
     public void handleResizeEvent() {
+        tweakPalettes();
         reposition();
         redrawButtons();
     }

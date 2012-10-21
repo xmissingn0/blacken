@@ -80,11 +80,10 @@ public class Tutorial {
     protected boolean quit;
     private Grid<Integer> grid;
     private Random rand;
-    private int nextLocation;
     // private final static Positionable MAP_START = new Point(1, 0);
     // private final static Positionable MAP_END = new Point(-1, 0);
     private Positionable upperLeft = new Point(0, 0);
-    private Positionable player = new Point(-1, -1);
+    private Player player = new Player();
     private Integer underPlayer = -1;
     private boolean dirtyMsg = false;
     private boolean dirtyStatus = false;
@@ -94,7 +93,6 @@ public class Tutorial {
     private Set<Integer> passable;
     private Set<Integer> roomWalls;
     private List<Map<Integer, Representation>> representations = new ArrayList<>();
-    private int represent = 0;
     private static final int BASE_WIDTH = 80;
     private static final int BASE_HEIGHT = 25;
     private HelpSystem helpSystem;
@@ -322,7 +320,6 @@ public class Tutorial {
         BSPTree<Room> bsp = simpleDigger.setup(grid, config);
         List<Room> rooms = new ArrayList(bsp.findContained(null));
         Collections.shuffle(rooms, rand);
-        nextLocation = 0x31;
         int idx = 0;
         for (Integer c = 0x31; c < 0x3a; c++) {
             rooms.get(idx).assignToContainer(c);
@@ -513,18 +510,6 @@ public class Tutorial {
             case BlackenKeys.KEY_KP_RIGHT:
                 movePlayerBy(0,  +1);
                 break;
-            case ' ':
-                this.represent ++;
-                if (this.represent >= this.representations.size()) {
-                    this.represent = 0;
-                }
-                break;
-            case BlackenKeys.KEY_BACKSPACE:
-                this.represent --;
-                if (this.represent < 0) {
-                    this.represent = this.representations.size() -1;
-                }
-                break;
             case 'q':
             case 'Q':
             case BlackenKeys.KEY_ESCAPE:
@@ -621,6 +606,7 @@ public class Tutorial {
     public void init(TerminalInterface term, ColorPalette palette) {
         if (term == null) {
             term = new SwingTerminal();
+            term.overrideConfig("Swamp Orc Adventure");
             term.init("Blacken Example: Swamp Orc Adventure", BASE_HEIGHT, BASE_WIDTH);
         }
         this.term = term;
@@ -640,8 +626,7 @@ public class Tutorial {
     public static void main(String[] args) {
         Tutorial that = new Tutorial();
         that.init(null, null);
-        SplashScreen screen = new SplashScreen(that.term, 
-                new SimpleSize(BASE_HEIGHT, BASE_WIDTH));
+        SplashScreen screen = new SplashScreen(that.term);
         screen.run();
         screen.handleResizeEvent();
         ConfirmationDialog confirm = new ConfirmationDialog(that.term,
@@ -650,13 +635,14 @@ public class Tutorial {
         confirm.run();
         String got = confirm.getCurrentOptionText();
         LOGGER.error("Confirmation dialog returned: {}", got);
-        if ("No".equals(got)) {
-            GameOver over = new GameOver(that.term,
-                    new SimpleSize(BASE_HEIGHT, BASE_WIDTH));
-            over.addText("Details", "You have died.");
-            over.addText("Furthermore", "You died foolishly.");
-            over.run();
+        GameOver over = new GameOver(that.term);
+        if ("Yes".equals(got)) {
+            over.addText("You have failed.", "You have died by quitting.");
+        } else {
+            over.setAscension(true);
+            over.addText("You won!", "You have evaded an interesting life.");
         }
+        over.run();
         that.loop();
         that.quit();
     }
