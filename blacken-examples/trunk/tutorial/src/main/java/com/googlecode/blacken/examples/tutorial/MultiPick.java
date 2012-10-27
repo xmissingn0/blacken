@@ -86,6 +86,7 @@ public class MultiPick implements CodepointCallbackInterface {
     private String topMessage = null;
     private CodepointCallbackInterface secondaryCallback = null;
     private boolean useDefaultTemplate = true;
+    private Integer cancelIndex = null;
 
     public MultiPick(TerminalInterface term, String title) {
         this.term = term;
@@ -149,14 +150,74 @@ public class MultiPick implements CodepointCallbackInterface {
             codepoint = secondaryCallback.handleCodepoint(codepoint);
         }
         if (codepoint == BlackenKeys.NO_KEY) {
-            lastModifiers = null;
+            lastModifiers = EnumSet.noneOf(BlackenModifier.class);
             return codepoint;
         }
         if (BlackenKeys.isModifier(codepoint)) {
             this.lastModifiers = BlackenModifier.getAsSet(codepoint);
             return codepoint;
         }
+        int modifierSelection = 0;
+        if (lastModifiers.contains(BlackenModifier.MODIFIER_KEY_SHIFT)) {
+            modifierSelection += 10;
+        }
+        if (lastModifiers.contains(BlackenModifier.MODIFIER_KEY_CTRL)) {
+            modifierSelection += 20;
+        }
+        if (lastModifiers.contains(BlackenModifier.MODIFIER_KEY_ALT)) {
+            modifierSelection += 40;
+        }
         switch (codepoint) {
+            case BlackenKeys.KEY_ESCAPE:
+            case BlackenKeys.KEY_CANCEL:
+            case 'q':
+            case 'Q':
+                if (this.cancelIndex != null) {
+                    this.currentOption = this.cancelIndex;
+                    this.complete = true;
+                    return BlackenKeys.CMD_END_LOOP;
+                }
+                break;
+            case BlackenKeys.KEY_NP_1:
+            case '1':
+                this.setCurrentOption(0 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_2:
+            case '2':
+                this.setCurrentOption(1 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_3:
+            case '3':
+                this.setCurrentOption(2 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_4:
+            case '4':
+                this.setCurrentOption(3 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_5:
+            case '5':
+                this.setCurrentOption(4 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_6:
+            case '6':
+                this.setCurrentOption(5 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_7:
+            case '7':
+                this.setCurrentOption(6 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_8:
+            case '8':
+                this.setCurrentOption(7 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_9:
+            case '9':
+                this.setCurrentOption(8 + modifierSelection);
+                break;
+            case BlackenKeys.KEY_NP_0:
+            case '0':
+                this.setCurrentOption(9 + modifierSelection);
+                break;
             case BlackenKeys.KEY_LEFT:
             case BlackenKeys.KEY_KP_LEFT:
                 this.switchMessage(currentOption - 1);
@@ -570,5 +631,13 @@ public class MultiPick implements CodepointCallbackInterface {
             bottomViewer.setMessage(message);
             redraw();
         }
+    }
+
+    public Integer getCancelIndex() {
+        return cancelIndex;
+    }
+
+    public void setCancelIndex(Integer cancelIndex) {
+        this.cancelIndex = cancelIndex;
     }
 }

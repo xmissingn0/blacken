@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -665,17 +666,28 @@ public class Tutorial {
         pick.addChoice("Cheat", "Go to the swamp early to get a head start.");
         pick.addChoice("Balk", "Complain that the Ochre Mage wouldn't like it.");
         pick.setStaticOnTop(true);
-        pick.run();
-        ConfirmationDialog confirm = new ConfirmationDialog(that.term,
-                screen, "Are you sure you want to quit?", "No", "Yes");
-        confirm.setColor(0xFFaaaaaa, 0xFF222299);
-        confirm.run();
-        String got = confirm.getCurrentOptionText();
-        LOGGER.error("Confirmation dialog returned: {}", got);
+        pick.setCancelIndex(-1);
         Game game = Game.getInstance();
-        if ("Yes".equals(got)) {
-            game.quit();
-        }
+        do {
+            pick.run();
+            if (pick.getCurrentOptionText() == null) {
+                ConfirmationDialog confirm = new ConfirmationDialog(that.term,
+                        screen, "Are you sure you want to quit?", "No", "Yes");
+                confirm.setColor(0xFFaaaaaa, 0xFF222299);
+                confirm.run();
+                String got = confirm.getCurrentOptionText();
+                LOGGER.error("Confirmation dialog returned: {}", got);
+                if ("Yes".equals(got)) {
+                    game.quit();
+                    that.quit = true;
+                }
+            } else if (pick.getCurrentOptionText().equals("Balk")) {
+                that.quit = true;
+            } else {
+                game.killPlayer(new AbstractHorror("gutted like a pig by an unseen horror"));
+                that.quit = true;
+            }
+        } while(!that.quit);
         game.getGameOver().run();
         that.loop();
         that.quit();

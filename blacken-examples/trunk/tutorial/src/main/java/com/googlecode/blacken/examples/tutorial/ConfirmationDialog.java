@@ -442,4 +442,12 @@ public class ConfirmationDialog implements Steppable, CodepointCallbackInterface
         looper.run();
     }
 
+    public Integer getCancelIndex() {
+        return cancelIndex;
+    }
+
+    public void setCancelIndex(Integer cancelIndex) {
+        this.cancelIndex = cancelIndex;
+    }
+
 }

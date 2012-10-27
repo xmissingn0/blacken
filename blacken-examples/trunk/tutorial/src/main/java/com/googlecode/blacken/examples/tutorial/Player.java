@@ -195,6 +195,9 @@ public class Player implements TimedPlayerlike {
                             col = 0;
                         }
                     } else if (col + word.length() < lineLength) {
+                        if (col > 0) {
+                            buf.append(" ");
+                        }
                         buf.append(word);
                         col += word.length();
                     } else if (word.length() < lineLength) {
@@ -304,6 +307,7 @@ public class Player implements TimedPlayerlike {
             if (g.getDescription() != null) {
                 buf.append("\n");
                 buf.append(rewrap(g.getDescription(), 77));
+                buf.append("\n");
             }
         }
         return buf.toString();
@@ -311,5 +315,10 @@ public class Player implements TimedPlayerlike {
 
     Memorylike getMemory() {
         return this.memory;
+    }
+
+    @Override
+    public String getName() {
+        return "Player";
     }
 }

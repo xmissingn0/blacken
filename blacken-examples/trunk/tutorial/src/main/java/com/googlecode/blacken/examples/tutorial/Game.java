@@ -18,6 +18,7 @@ package com.googlecode.blacken.examples.tutorial;
 
 import com.googlecode.blacken.core.Random;
 import com.googlecode.blacken.dungeon.TIMTypes.Itemlike;
+import com.googlecode.blacken.dungeon.TIMTypes.Monsterlike;
 import com.googlecode.blacken.terminal.TerminalInterface;
 import java.util.Collection;
 import org.slf4j.Logger;
@@ -45,6 +46,18 @@ public class Game {
         goal.setComplete(false);
         goal.setTitle("Don't be a quitter.");
         player.getGoals().add("quitter", goal);
+
+        goal = new SimpleGoal();
+        relative = Random.getInstance().choice("mother",
+                "grandmother", "father", "grandfather");
+        goal.setDescription(
+            "Your " + relative + " requested that you survive your adventure.");
+        goal.setSuccess(1f);
+        goal.setRequired(true);
+        goal.setComplete(false);
+        goal.setTitle("Survive your adventure.");
+        player.getGoals().add("survive", goal);
+
     }
     static public void setTerminal(TerminalInterface view) {
         term = view.getBackingTerminal();
@@ -71,6 +84,7 @@ public class Game {
             throw new NullPointerException("Set TerminalInterface before preparing GameOver");
         }
         player.getGoal("quitter").setComplete(true);
+        player.getGoal("survive").setComplete(true);
         gameOver = new GameOver(term);
         String playerText = null;
         if (player == null) {
@@ -106,6 +120,7 @@ public class Game {
                 buf.append(" - Failed");
                 buf.append(String.format(": %3.4f%% finished", g.getSuccess() * 100f));
             }
+            buf.append("\n");
         }
         if (specialNoteA) {
             buf.append("\n" +
@@ -150,6 +165,13 @@ public class Game {
     private void identify(Player player, Itemlike item) {
         item.setKnown(true);
         player.getMemory().addKnowledge(item);
+    }
+
+    void killPlayer(Monsterlike killer) {
+        Goal goal = player.getGoal("survive");
+        goal.setSuccess(0f);
+        // goal.setTitle("You were " + killer.getName() + ".");
+        goal.setDescription(goal.getDescription() + "\n\nYou were " + killer.getName() + ".");
     }
 
 }
