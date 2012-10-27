@@ -300,7 +300,8 @@ public class ConfirmationDialog implements Steppable, CodepointCallbackInterface
 
     private void redraw() {
         TerminalCellTemplate clearTemplate = new TerminalCellTemplate(template);
-        view.clear(clearTemplate.makeSafe(null));
+        clearTemplate.setSequence("");
+        TerminalUtils.applyTemplate(view, clearTemplate);
         if (!squelchBox) {
             Box.box(view, Box.BoxMethod.INSIDE_WALL, BoxRegion.inset(view.getBounds(), 0, 1));
         }
@@ -368,8 +369,8 @@ public class ConfirmationDialog implements Steppable, CodepointCallbackInterface
     }
 
     private void redrawButtons() {
-        TerminalUtils.applyTemplate(this.buttonView, template);
         buttonView.clear(template.makeSafe(null));
+        TerminalUtils.applyTemplate(this.buttonView, template);
         int textSize = (this.buttonView.getWidth() - 8) / 3;
         Box.box(this.buttonView, Box.BoxMethod.OUTSIDE_WALL,
                         new BoxRegion(1, textSize, buttonView.getY(),

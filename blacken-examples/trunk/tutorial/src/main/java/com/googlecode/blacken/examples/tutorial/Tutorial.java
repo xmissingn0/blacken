@@ -628,7 +628,44 @@ public class Tutorial {
         screen.run();
         screen.handleResizeEvent();
         Game.setTerminal(that.term);
-        Game.getInstance().getPlayer();
+        MultiPick pick = new MultiPick(that.term, "Please decide carefully.");
+        pick.setStaticMessage(
+  "The young farmer says, \"The swamp orcs totally devastated my uncle's cabbage\n"
++ "crop.\" The bartender says, \"The Ochre Mage said they're supposed to stay in\n"
++ " the swamp.\" The farmer shrugged, \"He's never said why they're supposed to\n"
++ "stay in the swamp. Maybe they found a way around his magic?\""
++ "\n\n" +
+  "The shopkeeper says, \"You mean she.\" Her voice firm, \"The Ochre Mage is a\n"
++ "woman. She deals in orphans and talks shop with nursemaids and those that\n"
++ "assist with the births of man and beast.\""
++ "\n\n" +
+  "The young farmer says, \"Man or woman, the Ochre Mage is powerful. The Ochre\n"
++ "Mage also isn't expected to return for several months. We have a swamp orc\n"
++ "problem today.\""
++ "\n\n" +
+  "The bartender says, \"Which uncle are you talking about? Old Jim? The one\n"
++ "that goes three towns over to do his drinking so his wife won't find out?\""
++ "\n\n" +
+  "The young farmer says, \"It is Old Jim, but he doesn't drink...\""
++ "\n\n" +
+  "The bartender laughs, \"My brother and his husband run the bar. Your uncle\n"
++ "is there religiously five nights a week -- you've never wondered why he's so\n"
++ "broke? It's not swamp orcs -- if such creatures even exist -- he's selling\n"
++ "his crop and drinking the profits.\""
++ "\n\n" +
+  "The mayor adjusts his tie, and says, \"I think we need to nip this in the\n"
++ "bud. I propose we have a swamp orc killing contest. We can drive some\n"
++ "commerce into town while we're at it.\""
++ "\n\n" +
+  "The shopkeeper shrugs, \"It's foolish, but I've got an apprentice that's\n"
++ "been with me three years and hasn't seen a proper busy day.\""
++ "\n\n" +
+  "The swamp orc contest starts tomorrow morning. If you leave tonight you can\n"
++ "have a head start.\n\n");
+        pick.addChoice("Cheat", "Go to the swamp early to get a head start.");
+        pick.addChoice("Balk", "Complain that the Ochre Mage wouldn't like it.");
+        pick.setStaticOnTop(true);
+        pick.run();
         ConfirmationDialog confirm = new ConfirmationDialog(that.term,
                 screen, "Are you sure you want to quit?", "No", "Yes");
         confirm.setColor(0xFFaaaaaa, 0xFF222299);

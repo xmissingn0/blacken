@@ -21,7 +21,6 @@ import com.googlecode.blacken.colors.ColorPalette;
 import com.googlecode.blacken.grid.BoxRegion;
 import com.googlecode.blacken.grid.Point;
 import com.googlecode.blacken.grid.Regionlike;
-import com.googlecode.blacken.terminal.BlackenCodePoints;
 import com.googlecode.blacken.terminal.BlackenEventType;
 import com.googlecode.blacken.terminal.BlackenKeys;
 import com.googlecode.blacken.terminal.BlackenModifier;

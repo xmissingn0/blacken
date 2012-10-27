@@ -119,11 +119,7 @@ public class HelpSystem implements CodepointCallbackInterface {
         return buf.toString();
     }
     private HelpSystem() {
-        try {
-            gradientNormal = ColorHelper.createGradient(null, 12, ColorHelper.lookup(null, "#271f0f", "#863"));
-        } catch (InvalidStringFormatException ex) {
-            throw new RuntimeException(ex);
-        }
+        gradientNormal = ColorHelper.createGradient(12, 0xFF271f0f, 0xFF886633);
         gradientMessage = new ArrayList<>();
         for (int c : gradientNormal) {
             gradientMessage.add(ColorHelper.lerp(c, 0xFF333333, 0.4f));
