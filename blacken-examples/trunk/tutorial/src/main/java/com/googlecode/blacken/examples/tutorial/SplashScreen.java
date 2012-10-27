@@ -75,7 +75,7 @@ public class SplashScreen implements Steppable, CodepointCallbackInterface {
         for (int i = 0; i < gradientColors.size(); i++) {
             gradient.add(i + startIndex);
         }
-        redraw();
+        // redraw();
         loop();
         term.setEventNotices(oldNotices);
         term.setPalette(oldPalette);

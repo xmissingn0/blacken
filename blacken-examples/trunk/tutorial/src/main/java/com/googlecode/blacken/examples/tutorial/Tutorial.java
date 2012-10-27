@@ -24,7 +24,6 @@ import com.googlecode.blacken.dungeon.SimpleDigger;
 import com.googlecode.blacken.grid.Grid;
 import com.googlecode.blacken.grid.Point;
 import com.googlecode.blacken.grid.Positionable;
-import com.googlecode.blacken.grid.SimpleSize;
 import com.googlecode.blacken.swing.SwingTerminal;
 import com.googlecode.blacken.terminal.*;
 import java.util.ArrayList;
@@ -95,7 +94,6 @@ public class Tutorial {
     private List<Map<Integer, Representation>> representations = new ArrayList<>();
     private static final int BASE_WIDTH = 80;
     private static final int BASE_HEIGHT = 25;
-    private HelpSystem helpSystem;
 
     public void addRepresentations() {
         // default
@@ -629,20 +627,19 @@ public class Tutorial {
         SplashScreen screen = new SplashScreen(that.term);
         screen.run();
         screen.handleResizeEvent();
+        Game.setTerminal(that.term);
+        Game.getInstance().getPlayer();
         ConfirmationDialog confirm = new ConfirmationDialog(that.term,
                 screen, "Are you sure you want to quit?", "No", "Yes");
         confirm.setColor(0xFFaaaaaa, 0xFF222299);
         confirm.run();
         String got = confirm.getCurrentOptionText();
         LOGGER.error("Confirmation dialog returned: {}", got);
-        GameOver over = new GameOver(that.term);
+        Game game = Game.getInstance();
         if ("Yes".equals(got)) {
-            over.addText("You have failed.", "You have died by quitting.");
-        } else {
-            over.setAscension(true);
-            over.addText("You won!", "You have evaded an interesting life.");
+            game.quit();
         }
-        over.run();
+        game.getGameOver().run();
         that.loop();
         that.quit();
     }

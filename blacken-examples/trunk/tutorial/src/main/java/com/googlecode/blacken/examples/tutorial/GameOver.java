@@ -21,7 +21,6 @@ import com.googlecode.blacken.colors.ColorPalette;
 import com.googlecode.blacken.grid.BoxRegion;
 import com.googlecode.blacken.grid.Point;
 import com.googlecode.blacken.grid.Regionlike;
-import com.googlecode.blacken.grid.Sizable;
 import com.googlecode.blacken.terminal.BlackenEventType;
 import com.googlecode.blacken.terminal.BlackenKeys;
 import com.googlecode.blacken.terminal.BlackenModifier;
@@ -36,7 +35,6 @@ import com.googlecode.blacken.terminal.editing.Alignment;
 import com.googlecode.blacken.terminal.editing.CodepointCallbackInterface;
 import com.googlecode.blacken.terminal.editing.Images;
 import com.googlecode.blacken.terminal.editing.SingleLine;
-import com.googlecode.blacken.terminal.editing.StringViewer;
 import com.googlecode.blacken.terminal.utils.TerminalUtils;
 import com.googlecode.blacken.terminal.widgets.Box;
 import java.util.ArrayList;
@@ -239,7 +237,7 @@ public class GameOver implements CodepointCallbackInterface {
 
     private void animate() {
         if (!this.complete) {
-            LOGGER.debug("Gradient size? {}", gradientNormal.size());
+            // LOGGER.debug("Gradient size? {}", gradientNormal.size());
             // LOGGER.debug("Starting color: {}", term.getBackingTerminal().getPalette().get(gradientNormal.get(0)));
             term.getPalette().rotate(gradientNormal.get(0),
                                      gradientNormal.size(), ascension ? -1 : +1);
